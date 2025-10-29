@@ -25,9 +25,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col h-screen`}
       >
-        {children}
+        <header className="bg-gray-100 dark:bg-gray-800 p-4 shadow">
+          <h1 className="text-xl font-bold">Gallery Hub</h1>
+        </header>
+        <main className="flex-1 p-4">{children}</main>
+        <footer className="bg-gray-100 dark:bg-gray-800 p-4 text-center">
+          © 2025 Gallery Hub. All rights reserved.
+        </footer>
       </body>
     </html>
   );
