@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "title": "빛과 그림자의 미학",
+    "location": "서울시립미술관",
+    "date": "2025.03.15 - 2025.06.30",
+    "category": "회화",
+    "image": "/images/exhibition1.jpg"
+  },
+  {
+    "id": 2,
+    "title": "형태의 조각들",
+    "location": "국립현대미술관 과천관",
+    "date": "2025.04.01 - 2025.08.15",
+    "category": "조각",
+    "image": "/images/exhibition2.jpg"
+  },
+  {
+    "id": 3,
+    "title": "추상의 울림",
+    "location": "DDP 디자인플라자",
+    "date": "2025.02.10 - 2025.05.20",
+    "category": "추상",
+    "image": "/images/exhibition3.jpg"
+  },
+  {
+    "id": 4,
+    "title": "자연을 닮은 색",
+    "location": "부산시립미술관",
+    "date": "2025.05.05 - 2025.09.01",
+    "category": "회화",
+    "image": "/images/exhibition4.jpg"
+  },
+  {
+    "id": 5,
+    "title": "움직이는 예술, 인터랙티브의 세계",
+    "location": "광주비엔날레 전시장",
+    "date": "2025.07.10 - 2025.10.25",
+    "category": "미디어아트",
+    "image": "/images/exhibition5.jpg"
+  },
+  {
+    "id": 6,
+    "title": "빛으로 조각하다",
+    "location": "롯데뮤지엄",
+    "date": "2025.01.20 - 2025.04.30",
+    "category": "조각",
+    "image": "/images/exhibition6.jpg"
+  }
+]
