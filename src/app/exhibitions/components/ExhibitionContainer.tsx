@@ -13,6 +13,7 @@ type Exhibition = {
 import { useState } from "react";
 import CategoryFilter from "./CategoryFilter";
 import ExhibitionList from "./ExhibitionList";
+import Spacer from "@/components/ui/Spacer";
 
 export default function ExhibitionContainer({ data }: { data: Exhibition[] }) {
   const [selectedCategory, setSelectedCategory] = useState("전체");
@@ -43,6 +44,7 @@ export default function ExhibitionContainer({ data }: { data: Exhibition[] }) {
         onChange={setSelectedRegion}
         type={"location"}
       />
+      <Spacer height={32} />
       <ExhibitionList data={filteredData} />
     </div>
   );
