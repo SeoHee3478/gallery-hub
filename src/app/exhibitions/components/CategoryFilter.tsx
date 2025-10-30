@@ -29,21 +29,25 @@ export default function CategoryFilter({ selected, onChange, type }: Props) {
   const categoryType = type === "category" ? [...categories] : [...locations];
 
   return (
-    <div>
-      {categoryType.map((cat) => (
-        <button
-          key={cat}
-          onClick={() => (selected === cat ? onChange("전체") : onChange(cat))}
-          className={`px-3 py-1 rounded-full border transition
+    <div className="overflow-x-auto w-full hide-scrollbar">
+      <div className="flex gap-2 ">
+        {categoryType.map((cat) => (
+          <button
+            key={cat}
+            onClick={() =>
+              selected === cat ? onChange("전체") : onChange(cat)
+            }
+            className={`w-fit px-3 py-1 rounded-full border transition whitespace-nowrap
             ${
               selected === cat
                 ? "bg-black text-white border-black"
                 : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
             }`}
-        >
-          {cat}
-        </button>
-      ))}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

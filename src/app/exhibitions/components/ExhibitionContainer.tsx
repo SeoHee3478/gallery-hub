@@ -16,7 +16,7 @@ import ExhibitionList from "./ExhibitionList";
 
 export default function ExhibitionContainer({ data }: { data: Exhibition[] }) {
   const [selectedCategory, setSelectedCategory] = useState("전체");
-  const [selectedRegion, setSelectedRegion] = useState("전국");
+  const [selectedRegion, setSelectedRegion] = useState("전체");
 
   const filteredData = data.filter((item) => {
     // 모든 필터가 꺼졌으면 전체보기
@@ -32,7 +32,7 @@ export default function ExhibitionContainer({ data }: { data: Exhibition[] }) {
   });
 
   return (
-    <div className="w-full max-w-5xl flex flex-col items-center">
+    <div className="w-full max-w-5xl flex flex-col items-center gap-2">
       <CategoryFilter
         selected={selectedCategory}
         onChange={setSelectedCategory}
