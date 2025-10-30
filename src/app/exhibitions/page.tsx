@@ -1,10 +1,10 @@
-import ExhibitionList from "./components/ExhibitionList";
+import ExhibitionContainer from "./components/ExhibitionContainer";
 import exhibitions from "@/data/exhibitions.json";
 
 export default function ExhibitionPage() {
   return (
-    <section>
-      <ExhibitionList data={exhibitions} />
+    <section className="flex justify-center">
+      <ExhibitionContainer data={exhibitions} />
     </section>
   );
 }
