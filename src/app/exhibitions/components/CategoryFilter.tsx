@@ -33,7 +33,7 @@ export default function CategoryFilter({ selected, onChange, type }: Props) {
       {categoryType.map((cat) => (
         <button
           key={cat}
-          onClick={() => onChange(cat)}
+          onClick={() => (selected === cat ? onChange("전체") : onChange(cat))}
           className={`px-3 py-1 rounded-full border transition
             ${
               selected === cat
