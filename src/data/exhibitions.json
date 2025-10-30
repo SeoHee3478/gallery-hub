@@ -5,7 +5,8 @@
     "location": "서울시립미술관",
     "date": "2025.03.15 - 2025.06.30",
     "category": "회화",
-    "image": "/images/exhibition1.jpg"
+    "image": "/images/exhibition1.jpg",
+    "region": "서울"
   },
   {
     "id": 2,
@@ -13,7 +14,8 @@
     "location": "국립현대미술관 과천관",
     "date": "2025.04.01 - 2025.08.15",
     "category": "조각",
-    "image": "/images/exhibition2.jpg"
+    "image": "/images/exhibition2.jpg",
+    "region": "경기"
   },
   {
     "id": 3,
@@ -21,7 +23,8 @@
     "location": "DDP 디자인플라자",
     "date": "2025.02.10 - 2025.05.20",
     "category": "추상",
-    "image": "/images/exhibition3.jpg"
+    "image": "/images/exhibition3.jpg",
+    "region": "서울"
   },
   {
     "id": 4,
@@ -29,7 +32,8 @@
     "location": "부산시립미술관",
     "date": "2025.05.05 - 2025.09.01",
     "category": "회화",
-    "image": "/images/exhibition4.jpg"
+    "image": "/images/exhibition4.jpg",
+    "region": "부산"
   },
   {
     "id": 5,
@@ -37,7 +41,8 @@
     "location": "광주비엔날레 전시장",
     "date": "2025.07.10 - 2025.10.25",
     "category": "미디어아트",
-    "image": "/images/exhibition5.jpg"
+    "image": "/images/exhibition5.jpg",
+    "region": "광주"
   },
   {
     "id": 6,
@@ -45,6 +50,7 @@
     "location": "롯데뮤지엄",
     "date": "2025.01.20 - 2025.04.30",
     "category": "조각",
-    "image": "/images/exhibition6.jpg"
+    "image": "/images/exhibition6.jpg",
+    "region": "서울"
   }
 ]

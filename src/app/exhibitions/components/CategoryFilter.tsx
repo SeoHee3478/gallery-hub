@@ -1,14 +1,36 @@
 type Props = {
   selected: string;
   onChange: (category: string) => void;
+  type: "category" | "location";
 };
 
 const categories = ["전체", "회화", "조각", "사진", "추상"];
+const locations = [
+  "전체",
+  "서울",
+  "경기",
+  "인천",
+  "부산",
+  "대전",
+  "대구",
+  "광주",
+  "울산",
+  "충북",
+  "강원특별자치도",
+  "충남",
+  "전북특별자치도",
+  "전남",
+  "경북",
+  "경남",
+  "제주특별자치도",
+];
 
-export default function CategoryFilter({ selected, onChange }: Props) {
+export default function CategoryFilter({ selected, onChange, type }: Props) {
+  const categoryType = type === "category" ? [...categories] : [...locations];
+
   return (
     <div>
-      {categories.map((cat) => (
+      {categoryType.map((cat) => (
         <button
           key={cat}
           onClick={() => onChange(cat)}

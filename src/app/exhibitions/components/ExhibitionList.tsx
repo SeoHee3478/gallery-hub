@@ -5,6 +5,7 @@ type Exhibition = {
   date: string;
   category: string;
   image?: string;
+  region: string;
 };
 
 export default function ExhibitionList({ data }: { data: Exhibition[] }) {
@@ -71,7 +72,9 @@ export default function ExhibitionList({ data }: { data: Exhibition[] }) {
                       d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                     />
                   </svg>
-                  <span>{item.location}</span>
+                  <span>
+                    {item.region} / {item.location}
+                  </span>
                 </div>
 
                 <div className="flex items-center gap-2 text-muted-foreground">
