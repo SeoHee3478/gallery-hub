@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import exhibitionsData from "@/data/exhibitions.json";
 
 interface Exhibition {
@@ -16,6 +16,9 @@ interface Exhibition {
 }
 
 export default function MapView() {
+  const [selectedExhibition, setSelectedExhibition] =
+    useState<Exhibition | null>(null);
+
   useEffect(() => {
     // Kakao SDK 동적 로드
     const script = document.createElement("script");
@@ -46,6 +49,8 @@ export default function MapView() {
           });
 
           kakao.maps.event.addListener(marker, "click", () => {
+            setSelectedExhibition(exh);
+            console.log("selectedExhibition", selectedExhibition, "exh", exh);
             infowindow.open(map, marker);
           });
         });
@@ -53,5 +58,39 @@ export default function MapView() {
     };
   }, []);
 
-  return <div id="map" style={{ width: "100%", height: "500px" }} />;
+  return (
+    <div className="relative" style={{ width: "100%", height: "600px" }}>
+      <div id="map" className="w-full h-full" />
+      {selectedExhibition && (
+        <div className="absolute z-10 bottom-4 left-0 right-0 m-4 bg-white rounded-xl shadow-2xl max-h-[60vh] overflow-y-auto">
+          <div className="flex p-4 gap-4">
+            {/* 왼쪽: 이미지 */}
+            <div className="w-32 h-32 flex-shrink-0">
+              <img
+                src={selectedExhibition.image}
+                alt={selectedExhibition.title}
+                className="w-full h-full object-cover rounded-lg"
+              />
+            </div>
+
+            {/* 오른쪽: 정보 */}
+            <div className="flex-1 flex flex-col justify-center">
+              <h2 className="text-lg font-bold mb-2">
+                {selectedExhibition.title}
+              </h2>
+              <p className="text-sm text-gray-600 mb-1">
+                {selectedExhibition.category}
+              </p>
+              <p className="text-sm text-gray-600 mb-1">
+                {selectedExhibition.date}
+              </p>
+              <p className="text-sm text-gray-600">
+                {selectedExhibition.location}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
