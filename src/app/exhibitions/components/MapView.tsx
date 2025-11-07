@@ -62,7 +62,7 @@ export default function MapView() {
     <div className="relative" style={{ width: "100%", height: "600px" }}>
       <div id="map" className="w-full h-full" />
       {selectedExhibition && (
-        <div className="absolute z-10 bottom-4 left-0 right-0 m-4 bg-white rounded-xl shadow-2xl max-h-[60vh] overflow-y-auto">
+        <div className="absolute z-10 bottom-4 left-1/2 -translate-x-1/2 m-4 bg-white rounded-xl shadow-2xl max-h-[60vh] overflow-y-auto">
           <div className="flex p-4 gap-4">
             {/* 왼쪽: 이미지 */}
             <div className="w-32 h-32 flex-shrink-0">
