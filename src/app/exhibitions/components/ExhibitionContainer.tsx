@@ -1,14 +1,16 @@
 "use client";
 
-type Exhibition = {
+interface Exhibition {
   id: number;
   title: string;
   location: string;
   date: string;
   category: string;
-  image?: string;
+  image: string;
   region: string;
-};
+  lat: number;
+  lng: number;
+}
 
 import { useState } from "react";
 import CategoryFilter from "./CategoryFilter";
@@ -46,7 +48,7 @@ export default function ExhibitionContainer({ data }: { data: Exhibition[] }) {
         type={"location"}
       />
       <Spacer height={32} />
-      <MapView />
+      <MapView data={filteredData} />
       <ExhibitionList data={filteredData} />
     </div>
   );

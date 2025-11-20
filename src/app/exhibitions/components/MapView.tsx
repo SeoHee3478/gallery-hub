@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import exhibitionsData from "@/data/exhibitions.json";
+import { useEffect, useRef, useState } from "react";
 
 interface Exhibition {
   id: number;
@@ -15,9 +14,13 @@ interface Exhibition {
   lng: number;
 }
 
-export default function MapView() {
+export default function MapView({ data }: { data: Exhibition[] }) {
   const [selectedExhibition, setSelectedExhibition] =
     useState<Exhibition | null>(null);
+
+  const mapRef = useRef<kakao.maps.Map>(null); //지도 객체 저장
+  const markersRef = useRef<kakao.maps.Marker[]>([]); //마커 저장 배열
+  const [mapReady, setMapReady] = useState(false);
 
   useEffect(() => {
     // Kakao SDK 동적 로드
@@ -30,33 +33,40 @@ export default function MapView() {
         const container = document.getElementById("map");
         if (!container) return;
 
-        const options = {
+        const map = new kakao.maps.Map(container, {
           center: new kakao.maps.LatLng(37.5665, 126.978),
           level: 3,
-        };
-        const map = new kakao.maps.Map(container, options);
-
-        // JSON 데이터 기반 마커 추가
-        exhibitionsData.forEach((exh: Exhibition) => {
-          const marker = new kakao.maps.Marker({
-            map,
-            position: new kakao.maps.LatLng(exh.lat, exh.lng),
-            title: exh.title,
-          });
-
-          const infowindow = new kakao.maps.InfoWindow({
-            content: `<div style="padding:5px;">${exh.title}</div>`,
-          });
-
-          kakao.maps.event.addListener(marker, "click", () => {
-            setSelectedExhibition(exh);
-            console.log("selectedExhibition", selectedExhibition, "exh", exh);
-            infowindow.open(map, marker);
-          });
         });
+
+        mapRef.current = map;
+        setMapReady(true);
       });
     };
   }, []);
+
+  useEffect(() => {
+    if (!mapReady || !mapRef.current) return;
+    const map = mapRef.current;
+
+    // 기존 마커 제거
+    markersRef.current.forEach((marker) => marker.setMap(null));
+    markersRef.current = [];
+
+    // 새 마커 생성
+    data.forEach((exh: Exhibition) => {
+      const marker = new kakao.maps.Marker({
+        map,
+        position: new kakao.maps.LatLng(exh.lat, exh.lng),
+        title: exh.title,
+      });
+
+      markersRef.current.push(marker);
+
+      kakao.maps.event.addListener(marker, "click", () => {
+        setSelectedExhibition(exh);
+      });
+    });
+  }, [data, mapReady]);
 
   return (
     <div className="relative" style={{ width: "100%", height: "600px" }}>
