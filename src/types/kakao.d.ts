@@ -26,6 +26,20 @@ declare namespace kakao.maps {
     close(): void;
   }
 
+  interface MapOptions {
+    center: LatLng;
+    level: number;
+  }
+
+  interface MarkerOptions {
+    map?: Map;
+    position: LatLng;
+    title?: string;
+  }
+
+  interface InfoWindowOptions {
+    content: string;
+  }
   const event: {
     addListener(
       target: Map | Marker,
