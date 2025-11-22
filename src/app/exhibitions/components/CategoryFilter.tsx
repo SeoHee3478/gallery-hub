@@ -4,7 +4,15 @@ type Props = {
   type: "category" | "location";
 };
 
-const categories = ["전체", "회화", "조각", "사진", "추상"];
+const categories = [
+  "전체",
+  "전시",
+  "연극",
+  "교육/체험",
+  "뮤지컬/오페라",
+  "아동/가족",
+  "음악/콘서트",
+];
 const locations = [
   "전체",
   "서울",
@@ -16,7 +24,7 @@ const locations = [
   "광주",
   "울산",
   "충북",
-  "강원특별자치도",
+  "강원",
   "충남",
   "전북특별자치도",
   "전남",
