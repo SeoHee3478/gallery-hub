@@ -1,16 +1,5 @@
 "use client";
-
-interface Exhibition {
-  id: number;
-  title: string;
-  location: string;
-  date: string;
-  category: string;
-  image: string;
-  region: string;
-  lat: number;
-  lng: number;
-}
+import { Exhibition } from "@/types/models/exhibition";
 
 import { useState } from "react";
 import CategoryFilter from "./CategoryFilter";
