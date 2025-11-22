@@ -1,18 +1,6 @@
 "use client";
-
+import { Exhibition } from "@/types/models/exhibition";
 import { useEffect, useRef, useState } from "react";
-
-interface Exhibition {
-  id: number;
-  title: string;
-  location: string;
-  date: string;
-  category: string;
-  image: string;
-  region: string;
-  lat: number;
-  lng: number;
-}
 
 export default function MapView({ data }: { data: Exhibition[] }) {
   const [selectedExhibition, setSelectedExhibition] =
@@ -53,7 +41,7 @@ export default function MapView({ data }: { data: Exhibition[] }) {
     markersRef.current = [];
 
     // 새 마커 생성
-    data.forEach((exh: Exhibition) => {
+    data?.forEach((exh: Exhibition) => {
       const marker = new kakao.maps.Marker({
         map,
         position: new kakao.maps.LatLng(exh.lat, exh.lng),

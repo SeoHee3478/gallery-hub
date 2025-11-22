@@ -1,22 +1,14 @@
-type Exhibition = {
-  id: number;
-  title: string;
-  location: string;
-  date: string;
-  category: string;
-  image?: string;
-  region: string;
-};
+import { Exhibition } from "@/types/models/exhibition";
 
 export default function ExhibitionList({ data }: { data: Exhibition[] }) {
   return (
     <div className="w-full">
       <h1 className="text-xl font-bold mb-8">
-        Showing {data.length} exhibitions
+        Showing {data?.length} exhibitions
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-        {data.map((item) => (
+        {data?.map((item) => (
           <div
             key={item.id}
             className="group overflow-hidden rounded-lg border border-border bg-card shadow-sm hover:shadow-md transition-shadow"
@@ -73,7 +65,7 @@ export default function ExhibitionList({ data }: { data: Exhibition[] }) {
                     />
                   </svg>
                   <span>
-                    {item.region} / {item.location}
+                    {item.region} {item.specificRegion} / {item.location}
                   </span>
                 </div>
 
