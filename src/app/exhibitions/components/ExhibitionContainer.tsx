@@ -37,7 +37,7 @@ export default function ExhibitionContainer({ data }: { data: Exhibition[] }) {
         type={"location"}
       />
       <Spacer height={32} />
-      <MapView data={filteredData} />
+      {/* <MapView data={filteredData} /> */}
       <ExhibitionList data={filteredData} />
     </div>
   );
