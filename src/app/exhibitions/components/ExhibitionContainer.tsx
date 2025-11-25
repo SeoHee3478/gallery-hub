@@ -1,21 +1,79 @@
 "use client";
-import { Exhibition } from "@/types/models/exhibition";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useExhibitions } from "@/hooks/useExhibitions";
 import CategoryFilter from "./CategoryFilter";
 import ExhibitionList from "./ExhibitionList";
 import Spacer from "@/components/ui/Spacer";
 import MapView from "./MapView";
 
-export default function ExhibitionContainer({ data }: { data: Exhibition[] }) {
+export default function ExhibitionContainer() {
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [selectedRegion, setSelectedRegion] = useState("전체");
 
-  const filteredData = data.filter((item) => {
-    // 모든 필터가 꺼졌으면 전체보기
+  // 무한스크롤 데이터 fetching
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+    error,
+  } = useExhibitions();
+
+  const observerTarget = useRef<HTMLDivElement>(null);
+
+  // 무한스크롤 설정
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  // 로딩 상태
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-5xl flex justify-center items-center min-h-screen">
+        <p className="text-xl">로딩 중...</p>
+      </div>
+    );
+  }
+
+  // 에러 상태
+  if (isError) {
+    return (
+      <div className="w-full max-w-5xl flex justify-center items-center min-h-screen">
+        <p className="text-xl text-red-500">
+          에러가 발생했습니다: {error?.message}
+        </p>
+      </div>
+    );
+  }
+
+  // 모든 페이지의 전시 데이터를 하나의 배열로 병합
+  const allExhibitions = data?.pages.flatMap((page) => page.exhibitions) ?? [];
+
+  // 필터링 로직 (기존과 동일)
+  const filteredData = allExhibitions.filter((item) => {
     if (selectedCategory === "전체" && selectedRegion === "전체") return true;
 
-    // 하나라도 켜져있으면 조건 체크
     const filteredCategory =
       selectedCategory !== "전체" ? item.category === selectedCategory : true;
     const filteredRegion =
@@ -39,6 +97,19 @@ export default function ExhibitionContainer({ data }: { data: Exhibition[] }) {
       <Spacer height={32} />
       {/* <MapView data={filteredData} /> */}
       <ExhibitionList data={filteredData} />
+
+      {/* 무한스크롤 트리거 영역 */}
+      <div
+        ref={observerTarget}
+        className="w-full h-20 flex justify-center items-center my-8"
+      >
+        {isFetchingNextPage && (
+          <p className="text-lg text-gray-600">더 불러오는 중...</p>
+        )}
+        {!hasNextPage && allExhibitions.length > 0 && (
+          <p className="text-gray-500">모든 전시를 불러왔습니다</p>
+        )}
+      </div>
     </div>
   );
 }
