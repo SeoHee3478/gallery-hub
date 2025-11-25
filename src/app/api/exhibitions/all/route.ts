@@ -1,4 +1,5 @@
 import formatDate from "@/lib/formatDate";
+import getYYYYMMDD from "@/lib/getYYYYMMDD";
 import { NextResponse } from "next/server";
 import xml2js from "xml2js";
 import he from "he";
@@ -31,8 +32,11 @@ async function fetchAndParseXml(
 
 export async function GET() {
   const serviceKey = process.env.PUBLIC_API_KEY;
-  const fromDate = "20250101";
-  const toDate = "20251231";
+  const today = new Date();
+  const fromDate = getYYYYMMDD(today);
+  const toDate = getYYYYMMDD(
+    new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000)
+  );
 
   const baseUrl = `http://apis.data.go.kr/B553457/cultureinfo/period2?serviceKey=${serviceKey}&from=${fromDate}&to=${toDate}&numOfrows=${NUM_OF_ROWS}`;
 
