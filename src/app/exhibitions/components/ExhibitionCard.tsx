@@ -4,6 +4,10 @@ import Image from "next/image";
 
 export default function ExhibitionCard({ item }: { item: Exhibition }) {
   const [imageSrc, setImageSrc] = useState(item.image);
+  const area = [item.region, item.specificRegion].filter(Boolean).join(" ");
+  const hasLocation = Boolean(item.location);
+  const locationText = area + (hasLocation ? ` | ${item.location}` : "");
+  const showIcon = area || hasLocation;
 
   return (
     <div className="group overflow-hidden rounded-lg border border-border bg-card shadow-sm hover:shadow-md transition-shadow">
@@ -39,28 +43,29 @@ export default function ExhibitionCard({ item }: { item: Exhibition }) {
 
         <div className="space-y-2 text-sm">
           <div className="flex items-center gap-2 text-muted-foreground">
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
-            <span>
-              {item.region} {item.specificRegion} / {item.location}
-            </span>
+            {showIcon && (
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            )}
+            <span className="line-clamp-2">{locationText}</span>
           </div>
 
           <div className="flex items-center gap-2 text-muted-foreground">
