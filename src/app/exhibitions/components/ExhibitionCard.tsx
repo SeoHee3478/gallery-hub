@@ -42,10 +42,10 @@ export default function ExhibitionCard({ item }: { item: Exhibition }) {
         </h2>
 
         <div className="space-y-2 text-sm">
-          <div className="flex items-center gap-2 text-muted-foreground">
+          <div className="flex items-start gap-2 text-muted-foreground">
             {showIcon && (
               <svg
-                className="w-4 h-4"
+                className="w-4 h-4 flex-shrink-0 mt-[2px]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
