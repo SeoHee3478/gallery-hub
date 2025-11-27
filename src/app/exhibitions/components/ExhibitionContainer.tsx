@@ -8,12 +8,6 @@ import Spacer from "@/components/ui/Spacer";
 import MapView from "./MapView";
 
 export default function ExhibitionContainer() {
-  if (
-    typeof window !== "undefined" &&
-    new URLSearchParams(window.location.search).get("error") === "true"
-  ) {
-    throw new Error("테스트 에러!");
-  }
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [selectedRegion, setSelectedRegion] = useState("전체");
 
