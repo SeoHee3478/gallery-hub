@@ -14,6 +14,10 @@ const categories = [
   "음악/콘서트",
   "행사/축제",
   "무용/발레",
+  "국악",
+  "도서",
+  "체육",
+  "기타",
 ];
 const locations = [
   "전체",
@@ -47,7 +51,7 @@ export default function CategoryFilter({ selected, onChange, type }: Props) {
             onClick={() =>
               selected === cat ? onChange("전체") : onChange(cat)
             }
-            className={`w-fit px-3 py-1 rounded-full border transition whitespace-nowrap
+            className={`w-fit px-3 py-1 rounded-full border transition whitespace-nowrap cursor-pointer
             ${
               selected === cat
                 ? "bg-black text-white border-black"
