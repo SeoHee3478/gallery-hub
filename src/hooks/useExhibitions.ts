@@ -9,7 +9,10 @@ interface ExhibitionsResponse {
 }
 
 async function fetchExhibitions(page: number): Promise<ExhibitionsResponse> {
-  const baseUrl = typeof window === "undefined" ? "http://localhost:3000" : "";
+  const baseUrl =
+    typeof window === "undefined"
+      ? process.env.BASE_URL || "http://localhost:3000"
+      : "";
 
   const response = await fetch(
     `${baseUrl}/api/exhibitions?page=${page}&limit=20`
