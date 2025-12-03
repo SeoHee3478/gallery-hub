@@ -2,7 +2,7 @@
 
 import { useExhibitionsDetail } from "@/hooks/useExhibitionsDetail";
 import { ExhibitionDetailHeader } from "./ExhibitionHeader";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ExhibitionTags } from "./ExhibitionTags";
 import Image from "next/image";
 import { ExhibitionInfoItem } from "./ExhibitionInfoItem";
@@ -13,10 +13,18 @@ import { Calendar, MapPin } from "lucide-react";
 import he from "he";
 import formatPhoneForTel from "@/lib/formatPhoneForTel";
 import formatDate from "@/lib/formatDate";
+import sanitizeImageUrl from "@/lib/sanitizeImageUrl";
 
 export default function ExhibitionDetail({ id }: { id: string }) {
   const { data, isLoading, error } = useExhibitionsDetail(id);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [imageSrc, setImageSrc] = useState<string>("/images/placeholder.svg");
+
+  useEffect(() => {
+    if (data?.imgUrl) {
+      setImageSrc(sanitizeImageUrl(data.imgUrl));
+    }
+  }, [data?.imgUrl]);
 
   if (isLoading) return <div>로딩중</div>;
   if (error) return <div>에러 발생</div>;
@@ -41,11 +49,15 @@ export default function ExhibitionDetail({ id }: { id: string }) {
         <div className="flex flex-col gap-4">
           <div className="relative w-full aspect-[2/3] rounded-lg overflow-hidden bg-muted/30">
             <Image
-              src={data.imgUrl || "/placeholder.svg"}
+              src={imageSrc}
               alt={he.decode(data.title)}
               fill
               className="object-cover"
               priority
+              onError={() => {
+                console.log("이미지 로드 실패:", imageSrc);
+                setImageSrc("/images/placeholder.svg");
+              }}
             />
           </div>
 
