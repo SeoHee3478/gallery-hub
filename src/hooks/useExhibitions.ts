@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { Exhibition } from "@/types/models/exhibition";
 
 interface ExhibitionsResponse {
@@ -9,7 +9,14 @@ interface ExhibitionsResponse {
 }
 
 async function fetchExhibitions(page: number): Promise<ExhibitionsResponse> {
-  const response = await fetch(`/api/exhibitions?page=${page}&limit=20`);
+  const baseUrl =
+    typeof window === "undefined"
+      ? process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+      : "";
+
+  const response = await fetch(
+    `${baseUrl}/api/exhibitions?page=${page}&limit=20`
+  );
   if (!response.ok) {
     throw new Error("Failed to fetch exhibitions");
   }
@@ -17,7 +24,7 @@ async function fetchExhibitions(page: number): Promise<ExhibitionsResponse> {
 }
 
 export function useExhibitions() {
-  return useInfiniteQuery({
+  return useSuspenseInfiniteQuery({
     queryKey: ["exhibitions"],
     queryFn: ({ pageParam = 1 }) => fetchExhibitions(pageParam),
     getNextPageParam: (lastPage) => {

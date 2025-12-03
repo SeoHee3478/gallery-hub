@@ -15,7 +15,7 @@ declare namespace kakao.maps {
   }
 
   class Marker {
-    constructor(options: { map: Map; position: LatLng; title?: string });
+    constructor(options: { map?: Map; position: LatLng; title?: string });
     setMap(map: Map | null): void;
     setPosition(position: LatLng): void;
   }

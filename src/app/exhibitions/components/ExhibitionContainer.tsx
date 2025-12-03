@@ -12,15 +12,8 @@ export default function ExhibitionContainer() {
   const [selectedRegion, setSelectedRegion] = useState("전체");
 
   // 무한스크롤 데이터 fetching
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    isError,
-    error,
-  } = useExhibitions();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useExhibitions();
 
   const observerTarget = useRef<HTMLDivElement>(null);
 
@@ -46,26 +39,6 @@ export default function ExhibitionContainer() {
       }
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
-
-  // 로딩 상태
-  if (isLoading) {
-    return (
-      <div className="w-full max-w-5xl flex justify-center items-center min-h-screen">
-        <p className="text-xl">로딩 중...</p>
-      </div>
-    );
-  }
-
-  // 에러 상태
-  if (isError) {
-    return (
-      <div className="w-full max-w-5xl flex justify-center items-center min-h-screen">
-        <p className="text-xl text-red-500">
-          에러가 발생했습니다: {error?.message}
-        </p>
-      </div>
-    );
-  }
 
   // 모든 페이지의 전시 데이터를 하나의 배열로 병합
   const allExhibitions = data?.pages.flatMap((page) => page.exhibitions) ?? [];
