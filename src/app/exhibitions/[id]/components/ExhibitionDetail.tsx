@@ -16,7 +16,7 @@ import formatDate from "@/lib/formatDate";
 import sanitizeImageUrl from "@/lib/sanitizeImageUrl";
 
 export default function ExhibitionDetail({ id }: { id: string }) {
-  const { data, isLoading, error } = useExhibitionsDetail(id);
+  const { data } = useExhibitionsDetail(id);
   const [isFavorite, setIsFavorite] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>("/images/placeholder.svg");
 
@@ -25,10 +25,6 @@ export default function ExhibitionDetail({ id }: { id: string }) {
       setImageSrc(sanitizeImageUrl(data.imgUrl));
     }
   }, [data?.imgUrl]);
-
-  if (isLoading) return <div>로딩중</div>;
-  if (error) return <div>에러 발생</div>;
-  if (!data) return <div>데이터를 찾을 수 없습니다</div>;
 
   const startDateFormatted = formatDate(data.startDate);
   const endDateFormatted = formatDate(data.endDate);
