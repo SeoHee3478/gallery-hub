@@ -20,7 +20,10 @@ async function fetchAndParseXml(
   return result;
 }
 
-export async function GET({ params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const serviceKey = process.env.PUBLIC_API_KEY;
   const { id: exhibitionId } = await params;
 
