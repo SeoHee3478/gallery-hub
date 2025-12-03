@@ -1,10 +1,12 @@
 import { ExhibitionDetail } from "@/types/api/exhibitionDetail";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 async function fetchExhibitionsDetail(id: string): Promise<ExhibitionDetail> {
   const baseUrl =
     typeof window === "undefined"
-      ? process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+      ? process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000"
       : "";
 
   const response = await fetch(`${baseUrl}/api/exhibitions/${id}`);
@@ -15,10 +17,10 @@ async function fetchExhibitionsDetail(id: string): Promise<ExhibitionDetail> {
 }
 
 export function useExhibitionsDetail(id: string) {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: ["exhibition", id],
     queryFn: () => fetchExhibitionsDetail(id),
-    enabled: !!id,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 60 * 24, // 1일
+    gcTime: 1000 * 60 * 60 * 24 * 7, // 1일
   });
 }
