@@ -63,7 +63,9 @@ export default function ExhibitionDetail({ id }: { id: string }) {
               {he.decode(data.title)}
             </h2>
             <p className="text-sm text-muted-foreground mb-4">
-              {data.realmName} • {data.area} {data.sigungu}
+              {data.realmName}
+              {(data.area || data.sigungu) && " • "}
+              {[data.area, data.sigungu].filter(Boolean).join(" ")}
             </p>
             <ExhibitionTags tags={[data.realmName, data.area, "Exhibition"]} />
           </div>
@@ -77,7 +79,9 @@ export default function ExhibitionDetail({ id }: { id: string }) {
               {he.decode(data.title)}
             </h2>
             <p className="text-base text-muted-foreground mb-4">
-              {data.realmName} • {data.area} {data.sigungu}
+              {data.realmName}
+              {(data.area || data.sigungu) && " • "}
+              {[data.area, data.sigungu].filter(Boolean).join(" ")}
             </p>
             <ExhibitionTags tags={[data.realmName, data.area, "Exhibition"]} />
           </div>
