@@ -1,16 +1,27 @@
 import { Exhibition } from "@/types/models/exhibition";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import sanitizeImageUrl from "@/lib/sanitizeImageUrl";
 
 export default function ExhibitionCard({ item }: { item: Exhibition }) {
-  const [imageSrc, setImageSrc] = useState(item.image);
+  const [imageSrc, setImageSrc] = useState<string>(item.image);
   const area = [item.region, item.specificRegion].filter(Boolean).join(" ");
   const hasLocation = Boolean(item.location);
   const locationText = area + (hasLocation ? ` | ${item.location}` : "");
   const showIcon = area || hasLocation;
 
+  useEffect(() => {
+    if (item?.image) {
+      setImageSrc(sanitizeImageUrl(item?.image));
+    }
+  }, [item?.image]);
+
   return (
-    <div className="group overflow-hidden rounded-lg border border-border bg-card shadow-sm hover:shadow-md transition-shadow">
+    <Link
+      href={`/exhibitions/${item.id}`}
+      className="group block overflow-hidden rounded-lg border border-border bg-card shadow-sm hover:shadow-md transition-shadow"
+    >
       {/* Image Container */}
       <div className="relative w-full h-48 bg-muted overflow-hidden">
         {imageSrc ? (
@@ -86,6 +97,6 @@ export default function ExhibitionCard({ item }: { item: Exhibition }) {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
