@@ -7,38 +7,19 @@ import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { useLogin } from "@/hooks/useLogin";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const { mutate: login, isPending, error, isError } = useLogin();
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 로그인 로직
-    console.log("Login:", { email, password });
 
-    try {
-      const response = await fetch("api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: email,
-          pw: password,
-        }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        console.log("로그인 완료", data.token);
-      } else {
-        console.log("로그인 실패", data.message);
-      }
-    } catch (error) {
-      console.error("네트워크 에러", error);
-    }
+    login({ id: email, pw: password });
   };
 
   const handleSocialLogin = (provider: string) => {
@@ -108,7 +89,11 @@ export function LoginForm() {
               </button>
             </div>
           </div>
-
+          {isError && (
+            <div className="text-red-500 text-sm">
+              {error?.message || "로그인에 실패했습니다."}
+            </div>
+          )}
           {/* Forgot Password Link */}
           <div className="text-right">
             <a
@@ -123,8 +108,9 @@ export function LoginForm() {
           <Button
             type="submit"
             className="w-full bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 cursor-pointer"
+            disabled={isPending}
           >
-            로그인
+            {isPending ? "로그인 중..." : "로그인"}
           </Button>
         </form>
 
