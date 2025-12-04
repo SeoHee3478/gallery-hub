@@ -13,10 +13,32 @@ export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     // 로그인 로직
     console.log("Login:", { email, password });
+
+    try {
+      const response = await fetch("api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: email,
+          pw: password,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log("로그인 완료", data.token);
+      } else {
+        console.log("로그인 실패", data.message);
+      }
+    } catch (error) {
+      console.error("네트워크 에러", error);
+    }
   };
 
   const handleSocialLogin = (provider: string) => {
