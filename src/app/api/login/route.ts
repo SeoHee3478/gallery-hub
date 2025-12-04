@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 export async function POST(request: Request) {
   try {
@@ -18,18 +19,30 @@ export async function POST(request: Request) {
       );
     }
 
-    const token = jwt.sign(
-      { email: "test@user.com" },
-      `${process.env.JWT_SECRET}`,
-      {
-        expiresIn: "1h",
-      }
-    );
-    console.log(token);
-
     console.log("receive data:", data, "id/pw", id, pw);
     // password 검증 로직 추후에 db로 변경
     if (pw === "1234") {
+      const token = jwt.sign(
+        { email: "test@user.com" },
+        `${process.env.JWT_SECRET}`,
+        {
+          expiresIn: "1h",
+        }
+      );
+      console.log(token);
+      const isProduction = process.env.NODE_ENV === "production";
+
+      // 쿠키 설정
+      const cookieStore = await cookies();
+      cookieStore.set({
+        name: "token",
+        value: token,
+        httpOnly: true, // JavaScript로 접근 불가(XSS 방어)
+        secure: isProduction,
+        sameSite: "strict", // CSRF 방어
+        maxAge: 3600, // 1시간
+        path: "/",
+      });
       return new Response(
         JSON.stringify({ message: "로그인 되었습니다.", token: token }),
         {
