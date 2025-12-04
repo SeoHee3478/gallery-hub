@@ -1,25 +1,11 @@
 "use client";
 
+import { useLogout } from "@/hooks/useLogout";
+
 export function Header() {
-  const handleLogout = async () => {
-    console.log("로그아웃 버튼 클릭!");
-    // 로그아웃 API 호출
-    try {
-      const response = await fetch("api/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      if (response.ok) {
-        console.log("로그아웃 완료");
-      } else {
-        console.log("로그아웃 실패", data.message);
-      }
-    } catch (error) {
-      console.error("네트워크 에러", error);
-    }
+  const { mutate: logout, isPending } = useLogout();
+  const handleLogout = () => {
+    logout();
   };
 
   return (
@@ -29,7 +15,7 @@ export function Header() {
         onClick={handleLogout}
         className="cursor-pointer font-medium text-gray-800"
       >
-        로그아웃
+        {isPending ? "로그아웃 중..." : "로그아웃"}
       </button>
     </header>
   );
