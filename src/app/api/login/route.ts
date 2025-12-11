@@ -22,13 +22,11 @@ export async function POST(request: Request) {
     console.log("receive data:", data, "id/pw", id, pw);
     // password 검증 로직 추후에 db로 변경
     if (pw === "1234") {
-      const token = jwt.sign(
-        { email: "test@user.com" },
-        `${process.env.JWT_SECRET}`,
-        {
-          expiresIn: "1h",
-        }
-      );
+      const user = { email: id };
+
+      const token = jwt.sign({ email: id }, `${process.env.JWT_SECRET}`, {
+        expiresIn: "1h",
+      });
       console.log(token);
       const isProduction = process.env.NODE_ENV === "production";
 
@@ -44,7 +42,11 @@ export async function POST(request: Request) {
         path: "/",
       });
       return new Response(
-        JSON.stringify({ message: "로그인 되었습니다.", token: token }),
+        JSON.stringify({
+          message: "로그인 되었습니다.",
+          token: token,
+          user: user,
+        }),
         {
           status: 200,
           headers: {
