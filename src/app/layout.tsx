@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import Script from "next/script";
+import { Header } from "@/components/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,10 +37,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col h-screen`}
       >
         <Providers>
-          <header className="bg-gray-100 dark:bg-gray-800 p-4 shadow">
-            <h1 className="text-xl font-bold">Gallery Hub</h1>
-          </header>
-          <main className="flex-1 p-4">{children}</main>
+          <Header />
+          <main className="flex-1 p-4 flex items-center justify-center">
+            {children}
+          </main>
           <footer className="bg-gray-100 dark:bg-gray-800 p-4 text-center">
             © 2025 Gallery Hub. All rights reserved.
           </footer>
