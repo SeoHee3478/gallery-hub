@@ -33,7 +33,7 @@ export default function ExhibitionDetail({ id }: { id: string }) {
   const telNumber = formatPhoneForTel(data.phone);
 
   return (
-    <div className="bg-background max-w-[1200px] mx-auto">
+    <div className="bg-background max-w-[1200px] w-full mx-auto">
       <ExhibitionDetailHeader
         title="Exhibition Details"
         isFavorite={isFavorite}
