@@ -7,7 +7,7 @@ export const revalidate = 3600;
 
 export default function ExhibitionPage() {
   return (
-    <section className="flex justify-center">
+    <section className="flex justify-center w-full">
       <ErrorBoundary
         fallback={
           <div className="w-full flex justify-center items-center min-h-screen">
