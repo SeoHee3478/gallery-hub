@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "./providers";
 import Script from "next/script";
 import { Header } from "@/components/Header";
+import ToasterProvider from "./toasterProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +45,7 @@ export default function RootLayout({
           <footer className="bg-gray-100 dark:bg-gray-800 p-4 text-center">
             © 2025 Gallery Hub. All rights reserved.
           </footer>
+          <ToasterProvider />
         </Providers>
       </body>
     </html>

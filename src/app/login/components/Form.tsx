@@ -2,19 +2,29 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLogin } from "@/hooks/useLogin";
+import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const { mutate: login, isPending, error, isError } = useLogin();
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const redirect = searchParams.get("redirect");
+    if (redirect === "true") {
+      toast.error("로그인이 필요합니다.");
+    }
+  }, [searchParams]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +46,6 @@ export function LoginForm() {
             로그인하고 갤러리 허브를 탐색해보세요.
           </p>
         </div>
-
         {/* Login Form */}
         <form onSubmit={handleLogin} className="space-y-4">
           {/* Email */}
