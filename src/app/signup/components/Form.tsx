@@ -5,8 +5,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function SignupForm() {
+  const router = useRouter();
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -27,10 +30,32 @@ export default function SignupForm() {
 
     if (password.length < 8) {
       setError("비밀번호는 8자 이상으로 입력해주세요.");
+      return;
     }
 
-    // TODO: 회원가입 로직 구현
-    console.log("회원가입:", { name, email, password, confirmPassword });
+    try {
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message);
+        return;
+      }
+      toast.success("회원가입 완료!");
+      router.push("/login");
+    } catch (error) {
+      console.error("회원가입 오류:", error);
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("네트워크 오류가 발생했습니다.");
+      }
+    }
   };
 
   const handleSocialSignup = (provider: string) => {
@@ -149,7 +174,7 @@ export default function SignupForm() {
               </button>
             </div>
           </div>
-
+          {error && <p className="text-red-500 font-medium text-sm">{error}</p>}
           {/* Signup Button */}
           <Button
             type="submit"
@@ -157,7 +182,6 @@ export default function SignupForm() {
           >
             회원가입
           </Button>
-          {error && <p className="text-red-500 font-medium text-sm">{error}</p>}
         </form>
         {/* Divider */}
         <div className="my-6 flex items-center gap-3">
