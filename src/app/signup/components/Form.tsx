@@ -5,11 +5,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useSignup } from "@/hooks/useSignup";
 
 export default function SignupForm() {
-  const router = useRouter();
+  const { mutate: signup, isPending } = useSignup();
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -32,30 +31,7 @@ export default function SignupForm() {
       setError("비밀번호는 8자 이상으로 입력해주세요.");
       return;
     }
-
-    try {
-      const response = await fetch("/api/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message);
-        return;
-      }
-      toast.success("회원가입 완료!");
-      router.push("/login");
-    } catch (error) {
-      console.error("회원가입 오류:", error);
-      if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError("네트워크 오류가 발생했습니다.");
-      }
-    }
+    signup({ name, email, password });
   };
 
   const handleSocialSignup = (provider: string) => {
@@ -179,6 +155,7 @@ export default function SignupForm() {
           <Button
             type="submit"
             className="w-full bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 cursor-pointer"
+            disabled={isPending}
           >
             회원가입
           </Button>
