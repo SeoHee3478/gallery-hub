@@ -14,9 +14,20 @@ export default function SignupForm() {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
+  const [error, setError] = useState("");
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // 검증 로직
+    if (password !== confirmPassword) {
+      setError("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("비밀번호는 8자 이상으로 입력해주세요.");
+    }
 
     // TODO: 회원가입 로직 구현
     console.log("회원가입:", { name, email, password, confirmPassword });
@@ -146,6 +157,7 @@ export default function SignupForm() {
           >
             회원가입
           </Button>
+          {error && <p className="text-red-500 font-medium text-sm">{error}</p>}
         </form>
         {/* Divider */}
         <div className="my-6 flex items-center gap-3">
