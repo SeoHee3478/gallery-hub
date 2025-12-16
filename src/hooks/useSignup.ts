@@ -21,7 +21,7 @@ export function useSignup() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error("회원가입 실패", data.message);
+        throw new Error(data.message || "회원가입에 실패했습니다.");
       }
 
       return data;
@@ -32,7 +32,7 @@ export function useSignup() {
     },
     onError: (error: Error) => {
       console.error("회원가입 오류:", error);
-      toast.error(error.message || "네트워크 오류가 발생했습니다.");
+      toast.error(error.message);
     },
   });
 }
