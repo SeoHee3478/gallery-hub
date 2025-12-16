@@ -1,3 +1,6 @@
+import { supabase } from "@/lib/supabase";
+import bcrypt from "bcryptjs";
+
 export async function POST(request: Request) {
   try {
     const data = await request.json();
@@ -45,14 +48,56 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log("회원가입 요청:", { name, email });
+    // 1. 이메일 중복 확인
+    const { data: existingUser, error: checkError } = await supabase
+      .from("users")
+      .select("email")
+      .eq("email", email)
+      .single();
+    if (existingUser) {
+      return new Response(
+        JSON.stringify({ message: "이미 가입된 이메일입니다." }),
+        {
+          status: 409,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
 
-    // TODO: DB에 사용자 저장
-    // - 이메일 중복 확인
-    // - 비밀번호 해싱 (bcrypt)
-    // - DB에 저장
+    // 2. 비밀번호 해싱
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Mock: 임시로 성공 응답
+    // 3. DB에 저장
+    const { data: newUser, error: insertError } = await supabase
+      .from("users")
+      .insert([
+        {
+          name,
+          email,
+          password: hashedPassword,
+        },
+      ])
+      .select()
+      .single();
+
+    if (insertError) {
+      console.error("DB Insert error:", insertError);
+
+      return new Response(
+        JSON.stringify({ message: "회원가입 중 오류가 발생했습니다." }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
+    console.log("회원가입 성공:", { name, email });
+
     return new Response(
       JSON.stringify({
         message: "회원가입이 완료되었습니다.",
