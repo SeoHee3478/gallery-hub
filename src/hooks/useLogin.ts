@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export function useLogin() {
   const router = useRouter();
@@ -16,12 +17,20 @@ export function useLogin() {
         body: JSON.stringify(credentials),
       });
 
-      if (!response.ok) throw new Error("로그인 실패");
-      return response.json();
+      const data = await response.json();
+
+      if (!response.ok)
+        throw new Error(data.message || "로그인에 실패했습니다.");
+      return data;
     },
     onSuccess: (data) => {
+      toast.success("로그인 성공!");
       setAuthState(data.user.email);
       router.push("/exhibitions");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+      console.error("로그인 오류:", error);
     },
   });
 }
