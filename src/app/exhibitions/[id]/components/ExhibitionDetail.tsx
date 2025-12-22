@@ -14,9 +14,21 @@ import he from "he";
 import formatPhoneForTel from "@/lib/formatPhoneForTel";
 import formatDate from "@/lib/formatDate";
 import sanitizeImageUrl from "@/lib/sanitizeImageUrl";
+import { useAddWishList } from "@/hooks/useWishlist";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
+interface ApiError extends Error {
+  status?: number;
+  statusCode?: number;
+}
 
 export default function ExhibitionDetail({ id }: { id: string }) {
   const { data } = useExhibitionsDetail(id);
+  const { mutate: addWishlist, isPending, isError } = useAddWishList();
+  const { user, isAuthenticated, loading } = useAuth();
+  const router = useRouter();
   const [isFavorite, setIsFavorite] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>("/images/placeholder.svg");
 
@@ -32,12 +44,36 @@ export default function ExhibitionDetail({ id }: { id: string }) {
 
   const telNumber = formatPhoneForTel(data.phone);
 
+  const handleAddWishlist = () => {
+    console.log("isAuthenticated", isAuthenticated);
+    if (!isAuthenticated) {
+      const url = new URL("/login", window.location.origin);
+      url.searchParams.set("redirect", "true");
+      router.push(url.toString());
+      return;
+    }
+
+    addWishlist(
+      {
+        item_id: id,
+        item_type: data.realmName,
+      },
+      {
+        onSuccess: () => {
+          setIsFavorite(true);
+          toast.success("좋아요 리스트에 담았습니다!");
+        },
+      }
+    );
+  };
+
   return (
     <div className="bg-background max-w-[1200px] w-full mx-auto">
       <ExhibitionDetailHeader
         title="Exhibition Details"
         isFavorite={isFavorite}
         onFavoriteToggle={() => setIsFavorite(!isFavorite)}
+        addWishlist={handleAddWishlist}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
