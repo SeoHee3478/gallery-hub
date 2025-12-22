@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: { itemId: string } }
+  { params }: { params: Promise<{ itemId: string }> }
 ) {
   try {
     const supabase = await createClient();
@@ -18,12 +18,15 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // 2. 찜 여부 확인
+    // 2. params를 await로 받아오기
+    const { itemId } = await params;
+
+    // 3. 본인 것만 삭제
     const { data, error } = await supabase
       .from("wishlists")
       .select("id")
       .eq("user_id", user.id)
-      .eq("item_id", params.itemId)
+      .eq("item_id", itemId)
       .single();
 
     if (error && error.code !== "PGRST116") {
