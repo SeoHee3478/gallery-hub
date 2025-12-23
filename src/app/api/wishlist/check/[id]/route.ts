@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ itemId: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createClient();
@@ -19,14 +19,14 @@ export async function GET(
     }
 
     // 2. params를 await로 받아오기
-    const { itemId } = await params;
+    const { id } = await params;
 
     // 3. 본인 것만 삭제
     const { data, error } = await supabase
       .from("wishlists")
       .select("id")
       .eq("user_id", user.id)
-      .eq("item_id", itemId)
+      .eq("item_id", id)
       .single();
 
     if (error && error.code !== "PGRST116") {
