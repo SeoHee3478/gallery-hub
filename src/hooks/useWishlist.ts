@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -11,6 +11,7 @@ const WISHLIST_KEYS = {
   all: ["wishlist"] as const,
   lists: () => [...WISHLIST_KEYS.all, "list"] as const,
   detail: (id: string) => [...WISHLIST_KEYS.all, "detail", id] as const,
+  check: (itemId: string) => [...WISHLIST_KEYS.all, "check", itemId] as const,
 };
 
 const wishlistAPI = {
@@ -31,6 +32,19 @@ const wishlistAPI = {
     }
     return data;
   },
+
+  check: async (itemId: string) => {
+    const response = await fetch(`/api/wishlist/check/${itemId}`);
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        return { isWishlisted: false };
+      }
+      throw new Error("좋아요 상태 확인을 하려면 로그인이 필요합니다.");
+    }
+
+    return response.json();
+  },
 };
 
 export const useAddWishList = () => {
@@ -38,12 +52,15 @@ export const useAddWishList = () => {
   const router = useRouter();
   return useMutation({
     mutationFn: wishlistAPI.add,
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: WISHLIST_KEYS.lists() });
+      queryClient.invalidateQueries({
+        queryKey: WISHLIST_KEYS.check(variables.item_id),
+      });
     },
     onError: (error: ApiError) => {
       if (error.status === 401 || error.message.includes("Unauthorized")) {
-        toast.error("로그인이 필요한 서비스입니다.");
+        // toast.error("로그인이 필요한 서비스입니다.");
         router.push("/login");
       }
       if (error.status === 409) {
@@ -53,5 +70,15 @@ export const useAddWishList = () => {
 
       toast.error(error.message || "오류가 발생했습니다.");
     },
+  });
+};
+
+export const useCheckWishList = (itemId: string) => {
+  return useQuery({
+    queryKey: WISHLIST_KEYS.check(itemId),
+    queryFn: () => wishlistAPI.check(itemId),
+    enabled: !!itemId,
+    staleTime: 1000 * 60 * 5,
+    retry: false,
   });
 };

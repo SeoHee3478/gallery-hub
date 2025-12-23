@@ -14,7 +14,7 @@ import he from "he";
 import formatPhoneForTel from "@/lib/formatPhoneForTel";
 import formatDate from "@/lib/formatDate";
 import sanitizeImageUrl from "@/lib/sanitizeImageUrl";
-import { useAddWishList } from "@/hooks/useWishlist";
+import { useAddWishList, useCheckWishList } from "@/hooks/useWishlist";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -28,6 +28,8 @@ export default function ExhibitionDetail({ id }: { id: string }) {
   const { data } = useExhibitionsDetail(id);
   const { mutate: addWishlist, isPending, isError } = useAddWishList();
   const { user, isAuthenticated, loading } = useAuth();
+  const { data: checkWishListData, isLoading: checkWishListIsLoading } =
+    useCheckWishList(id);
   const router = useRouter();
   const [isFavorite, setIsFavorite] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>("/images/placeholder.svg");
@@ -44,6 +46,8 @@ export default function ExhibitionDetail({ id }: { id: string }) {
 
   const telNumber = formatPhoneForTel(data.phone);
 
+  const isWishlisted = checkWishListData?.isWishlisted ?? false;
+
   const handleAddWishlist = () => {
     console.log("isAuthenticated", isAuthenticated);
     if (!isAuthenticated) {
@@ -53,18 +57,22 @@ export default function ExhibitionDetail({ id }: { id: string }) {
       return;
     }
 
-    addWishlist(
-      {
-        item_id: id,
-        item_type: data.realmName,
-      },
-      {
-        onSuccess: () => {
-          setIsFavorite(true);
-          toast.success("좋아요 리스트에 담았습니다!");
+    if (isWishlisted) {
+      console.log("취소");
+    } else {
+      addWishlist(
+        {
+          item_id: id,
+          item_type: data.realmName,
         },
-      }
-    );
+        {
+          onSuccess: () => {
+            setIsFavorite(true);
+            toast.success("좋아요 리스트에 담았습니다!");
+          },
+        }
+      );
+    }
   };
 
   return (
