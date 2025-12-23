@@ -21,7 +21,6 @@ import {
 } from "@/hooks/useWishlist";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 export default function ExhibitionDetail({ id }: { id: string }) {
   const { data } = useExhibitionsDetail(id);
@@ -32,7 +31,10 @@ export default function ExhibitionDetail({ id }: { id: string }) {
   const { mutate: removeWishlist, isPending: removePending } =
     useRemoveWishList();
   const router = useRouter();
-  const [isFavorite, setIsFavorite] = useState(false);
+  const isWishlisted = checkWishListData?.isWishlisted ?? false;
+  const isPending = addPending || removePending;
+
+  const [isFavorite, setIsFavorite] = useState(isWishlisted);
   const [imageSrc, setImageSrc] = useState<string>("/images/placeholder.svg");
 
   useEffect(() => {
@@ -45,8 +47,6 @@ export default function ExhibitionDetail({ id }: { id: string }) {
   const endDateFormatted = formatDate(data.endDate);
   const dateRange = `${startDateFormatted} - ${endDateFormatted}`;
   const telNumber = formatPhoneForTel(data.phone);
-  const isWishlisted = checkWishListData?.isWishlisted ?? false;
-  const isPending = addPending || removePending;
 
   const handleAddWishlist = () => {
     if (!isAuthenticated) {
@@ -65,8 +65,6 @@ export default function ExhibitionDetail({ id }: { id: string }) {
       });
     }
   };
-
-  console.log("isWishlisted", isWishlisted);
 
   return (
     <div className="bg-background max-w-[1200px] w-full mx-auto">
