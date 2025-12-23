@@ -45,6 +45,22 @@ const wishlistAPI = {
 
     return response.json();
   },
+
+  remove: async (itemId: string) => {
+    const response = await fetch(`/api/wishlist/${itemId}`, {
+      method: "DELETE",
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      const error = new Error(
+        data.message || "좋아요 취소에 실패하였습니다."
+      ) as ApiError;
+      error.status = response.status;
+      throw error;
+    }
+    return data;
+  },
 };
 
 export const useAddWishList = () => {
@@ -80,5 +96,28 @@ export const useCheckWishList = (itemId: string) => {
     enabled: !!itemId,
     staleTime: 1000 * 60 * 5,
     retry: false,
+  });
+};
+
+export const useRemoveWishList = () => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  return useMutation({
+    mutationFn: wishlistAPI.remove,
+    onSuccess: (_, itemId) => {
+      queryClient.invalidateQueries({ queryKey: WISHLIST_KEYS.lists() });
+      queryClient.invalidateQueries({
+        queryKey: WISHLIST_KEYS.check(itemId),
+      });
+      toast.success("좋아요가 취소되었습니다.");
+    },
+    onError: (error: ApiError) => {
+      if (error.status === 401 || error.message.includes("Unauthorized")) {
+        router.push("/login");
+        return;
+      }
+
+      toast.error(error.message || "좋아요 취소에 실패했습니다.");
+    },
   });
 };
