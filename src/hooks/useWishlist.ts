@@ -73,6 +73,7 @@ export const useAddWishList = () => {
       queryClient.invalidateQueries({
         queryKey: WISHLIST_KEYS.check(variables.item_id),
       });
+      toast.success("좋아요 리스트에 추가되었습니다.");
     },
     onError: (error: ApiError) => {
       if (error.status === 401 || error.message.includes("Unauthorized")) {
