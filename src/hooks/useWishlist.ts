@@ -94,8 +94,11 @@ export const useCheckWishList = (itemId: string) => {
     queryKey: WISHLIST_KEYS.check(itemId),
     queryFn: () => wishlistAPI.check(itemId),
     enabled: !!itemId,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
+    gcTime: 1000 * 60 * 5,
     retry: false,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 };
 
