@@ -19,7 +19,7 @@ export function ExhibitionLocation({
   // 유효한 좌표인지 확인
   const hasValidCoordinates =
     lat !== undefined && lng !== undefined && lat !== "" && lng !== "";
-  console.log(lat, lng);
+
   useEffect(() => {
     if (!hasValidCoordinates) return;
 

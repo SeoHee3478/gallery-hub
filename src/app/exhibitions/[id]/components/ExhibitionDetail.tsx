@@ -14,10 +14,27 @@ import he from "he";
 import formatPhoneForTel from "@/lib/formatPhoneForTel";
 import formatDate from "@/lib/formatDate";
 import sanitizeImageUrl from "@/lib/sanitizeImageUrl";
+import {
+  useAddWishList,
+  useCheckWishList,
+  useRemoveWishList,
+} from "@/hooks/useWishlist";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 export default function ExhibitionDetail({ id }: { id: string }) {
   const { data } = useExhibitionsDetail(id);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { mutate: addWishlist, isPending: addPending } = useAddWishList();
+  const { user, isAuthenticated, loading } = useAuth();
+  const { data: checkWishListData, isLoading: checkWishListIsLoading } =
+    useCheckWishList(id);
+  const { mutate: removeWishlist, isPending: removePending } =
+    useRemoveWishList();
+  const router = useRouter();
+  const isWishlisted = checkWishListData?.isWishlisted ?? false;
+  const isPending = addPending || removePending;
+
+  const [isFavorite, setIsFavorite] = useState(isWishlisted);
   const [imageSrc, setImageSrc] = useState<string>("/images/placeholder.svg");
 
   useEffect(() => {
@@ -29,8 +46,25 @@ export default function ExhibitionDetail({ id }: { id: string }) {
   const startDateFormatted = formatDate(data.startDate);
   const endDateFormatted = formatDate(data.endDate);
   const dateRange = `${startDateFormatted} - ${endDateFormatted}`;
-
   const telNumber = formatPhoneForTel(data.phone);
+
+  const handleAddWishlist = () => {
+    if (!isAuthenticated) {
+      const url = new URL("/login", window.location.origin);
+      url.searchParams.set("redirect", "true");
+      router.push(url.toString());
+      return;
+    }
+
+    if (isWishlisted) {
+      removeWishlist(id);
+    } else {
+      addWishlist({
+        item_id: id,
+        item_type: data.realmName,
+      });
+    }
+  };
 
   return (
     <div className="bg-background max-w-[1200px] w-full mx-auto">
@@ -38,6 +72,9 @@ export default function ExhibitionDetail({ id }: { id: string }) {
         title="Exhibition Details"
         isFavorite={isFavorite}
         onFavoriteToggle={() => setIsFavorite(!isFavorite)}
+        addWishlist={handleAddWishlist}
+        isPending={isPending}
+        checkWishListIsLoading={checkWishListIsLoading}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">

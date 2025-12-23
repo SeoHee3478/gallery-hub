@@ -23,14 +23,25 @@ export async function DELETE(
     const { id } = await params;
 
     // 3. 본인 것만 삭제
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("wishlists")
       .delete()
-      .eq("id", id)
-      .eq("user_id", user.id);
+      .eq("item_id", id)
+      .eq("user_id", user.id)
+      .select();
+
+    console.log("Delete result:", { data, error });
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    if (!data || data.length === 0) {
+      console.log("No records found to delete");
+      return NextResponse.json(
+        { error: "삭제할 항목을 찾을 수 없습니다." },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json({ success: true });

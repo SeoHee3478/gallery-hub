@@ -9,6 +9,9 @@ interface ExhibitionDetailHeaderProps {
   onShare?: () => void;
   isFavorite?: boolean;
   onFavoriteToggle?: () => void;
+  addWishlist: () => void;
+  isPending: boolean;
+  checkWishListIsLoading: boolean;
 }
 
 export function ExhibitionDetailHeader({
@@ -16,8 +19,16 @@ export function ExhibitionDetailHeader({
   onShare,
   isFavorite = false,
   onFavoriteToggle,
+  addWishlist,
+  isPending,
+  checkWishListIsLoading,
 }: ExhibitionDetailHeaderProps) {
   const router = useRouter();
+
+  const onClickFavoriteBtn = () => {
+    onFavoriteToggle?.();
+    addWishlist();
+  };
 
   return (
     <div className="flex items-center justify-between gap-2 mb-6">
@@ -33,12 +44,12 @@ export function ExhibitionDetailHeader({
         {title}
       </h1>
       <div className="flex items-center gap-2">
-        {/* [todo] 추후 좋아요 및 공유하기 버튼 기능 구현 후 버튼 활성화 */}
         <Button
           variant="ghost"
           size="icon"
-          onClick={onFavoriteToggle}
-          className="rounded-full invisible"
+          onClick={onClickFavoriteBtn}
+          className="rounded-full cursor-pointer"
+          disabled={isPending || checkWishListIsLoading}
         >
           <Heart
             className="w-5 h-5"
@@ -49,7 +60,7 @@ export function ExhibitionDetailHeader({
           variant="ghost"
           size="icon"
           onClick={onShare}
-          className="rounded-full invisible"
+          className="rounded-full cursor-pointer"
         >
           <Share2 className="w-5 h-5" />
         </Button>

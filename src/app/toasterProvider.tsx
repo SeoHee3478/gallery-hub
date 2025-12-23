@@ -7,6 +7,7 @@ export default function ToasterProvider() {
       position="top-right"
       richColors
       toastOptions={{ style: { zIndex: 9999 } }}
+      expand={true}
     />
   );
 }

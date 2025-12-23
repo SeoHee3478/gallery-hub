@@ -3,6 +3,13 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export async function proxy(request: NextRequest) {
+  if (
+    request.nextUrl.pathname.startsWith("/api/logout") ||
+    request.nextUrl.pathname === "/login"
+  ) {
+    return NextResponse.next();
+  }
+
   let response = NextResponse.next({
     request: {
       headers: request.headers,
