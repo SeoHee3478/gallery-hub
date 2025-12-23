@@ -10,6 +10,8 @@ interface ExhibitionDetailHeaderProps {
   isFavorite?: boolean;
   onFavoriteToggle?: () => void;
   addWishlist: () => void;
+  isPending: boolean;
+  checkWishListIsLoading: boolean;
 }
 
 export function ExhibitionDetailHeader({
@@ -18,6 +20,8 @@ export function ExhibitionDetailHeader({
   isFavorite = false,
   onFavoriteToggle,
   addWishlist,
+  isPending,
+  checkWishListIsLoading,
 }: ExhibitionDetailHeaderProps) {
   const router = useRouter();
 
@@ -45,6 +49,7 @@ export function ExhibitionDetailHeader({
           size="icon"
           onClick={onClickFavoriteBtn}
           className="rounded-full cursor-pointer"
+          disabled={isPending || checkWishListIsLoading}
         >
           <Heart
             className="w-5 h-5"

@@ -25,11 +25,12 @@ import { toast } from "sonner";
 
 export default function ExhibitionDetail({ id }: { id: string }) {
   const { data } = useExhibitionsDetail(id);
-  const { mutate: addWishlist, isPending, isError } = useAddWishList();
+  const { mutate: addWishlist, isPending: addPending } = useAddWishList();
   const { user, isAuthenticated, loading } = useAuth();
   const { data: checkWishListData, isLoading: checkWishListIsLoading } =
     useCheckWishList(id);
-  const { mutate: removeWishlist } = useRemoveWishList();
+  const { mutate: removeWishlist, isPending: removePending } =
+    useRemoveWishList();
   const router = useRouter();
   const [isFavorite, setIsFavorite] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>("/images/placeholder.svg");
@@ -45,6 +46,7 @@ export default function ExhibitionDetail({ id }: { id: string }) {
   const dateRange = `${startDateFormatted} - ${endDateFormatted}`;
   const telNumber = formatPhoneForTel(data.phone);
   const isWishlisted = checkWishListData?.isWishlisted ?? false;
+  const isPending = addPending || removePending;
 
   const handleAddWishlist = () => {
     if (!isAuthenticated) {
@@ -57,20 +59,14 @@ export default function ExhibitionDetail({ id }: { id: string }) {
     if (isWishlisted) {
       removeWishlist(id);
     } else {
-      addWishlist(
-        {
-          item_id: id,
-          item_type: data.realmName,
-        },
-        {
-          onSuccess: () => {
-            setIsFavorite(true);
-            toast.success("좋아요 리스트에 담았습니다!");
-          },
-        }
-      );
+      addWishlist({
+        item_id: id,
+        item_type: data.realmName,
+      });
     }
   };
+
+  console.log("isWishlisted", isWishlisted);
 
   return (
     <div className="bg-background max-w-[1200px] w-full mx-auto">
@@ -79,6 +75,8 @@ export default function ExhibitionDetail({ id }: { id: string }) {
         isFavorite={isFavorite}
         onFavoriteToggle={() => setIsFavorite(!isFavorite)}
         addWishlist={handleAddWishlist}
+        isPending={isPending}
+        checkWishListIsLoading={checkWishListIsLoading}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
