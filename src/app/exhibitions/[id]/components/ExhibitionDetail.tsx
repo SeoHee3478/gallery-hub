@@ -14,15 +14,14 @@ import he from "he";
 import formatPhoneForTel from "@/lib/formatPhoneForTel";
 import formatDate from "@/lib/formatDate";
 import sanitizeImageUrl from "@/lib/sanitizeImageUrl";
-import { useAddWishList, useCheckWishList } from "@/hooks/useWishlist";
+import {
+  useAddWishList,
+  useCheckWishList,
+  useRemoveWishList,
+} from "@/hooks/useWishlist";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
-interface ApiError extends Error {
-  status?: number;
-  statusCode?: number;
-}
 
 export default function ExhibitionDetail({ id }: { id: string }) {
   const { data } = useExhibitionsDetail(id);
@@ -30,6 +29,7 @@ export default function ExhibitionDetail({ id }: { id: string }) {
   const { user, isAuthenticated, loading } = useAuth();
   const { data: checkWishListData, isLoading: checkWishListIsLoading } =
     useCheckWishList(id);
+  const { mutate: removeWishlist } = useRemoveWishList();
   const router = useRouter();
   const [isFavorite, setIsFavorite] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>("/images/placeholder.svg");
@@ -43,13 +43,10 @@ export default function ExhibitionDetail({ id }: { id: string }) {
   const startDateFormatted = formatDate(data.startDate);
   const endDateFormatted = formatDate(data.endDate);
   const dateRange = `${startDateFormatted} - ${endDateFormatted}`;
-
   const telNumber = formatPhoneForTel(data.phone);
-
   const isWishlisted = checkWishListData?.isWishlisted ?? false;
 
   const handleAddWishlist = () => {
-    console.log("isAuthenticated", isAuthenticated);
     if (!isAuthenticated) {
       const url = new URL("/login", window.location.origin);
       url.searchParams.set("redirect", "true");
@@ -58,7 +55,7 @@ export default function ExhibitionDetail({ id }: { id: string }) {
     }
 
     if (isWishlisted) {
-      console.log("취소");
+      removeWishlist(id);
     } else {
       addWishlist(
         {
