@@ -3,6 +3,7 @@
 import { useLogout } from "@/hooks/useLogout";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export function Header() {
   const { isLoggedIn } = useAuthStore();
@@ -14,7 +15,9 @@ export function Header() {
 
   return (
     <header className="bg-gray-100 dark:bg-gray-800 p-4 shadow flex justify-between">
-      <h1 className="text-xl font-semibold">Gallery Hub</h1>
+      <h1 className="text-xl font-semibold">
+        <Link href="/exhibitions">Gallery Hub</Link>
+      </h1>
       {isLoggedIn ? (
         <button
           onClick={handleLogout}

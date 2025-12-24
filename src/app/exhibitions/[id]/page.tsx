@@ -23,7 +23,6 @@ export default async function ExhibitionDetailPage({
           </div>
         }
       >
-        {" "}
         <ExhibitionDetail id={id} />
       </Suspense>
     </ErrorBoundary>
