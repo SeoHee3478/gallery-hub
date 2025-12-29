@@ -17,7 +17,7 @@ export async function GET() {
     }
 
     // 2. 찜 목록 가져오기
-    const { data, error } = await supabase
+    const { data: wishlist, error } = await supabase
       .from("wishlists")
       .select("*")
       .eq("user_id", user.id)
@@ -27,7 +27,43 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json(data);
+    // 각 item의 상세 정보 병렬로 가져오기
+    const wishlistWithDetails = await Promise.all(
+      wishlist.map(async (item) => {
+        try {
+          const response = await fetch(
+            `${
+              process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+            }/api/exhibitions/${item.item_id}`,
+            { next: { revalidate: 3600 } }
+          );
+
+          if (!response.ok) throw new Error("Failed to fetch");
+
+          const details = await response.json();
+
+          return {
+            ...item,
+            details,
+          };
+        } catch (error) {
+          // 에러 발생 시 기본값 반환
+          console.error(error);
+          return {
+            ...item,
+            details: {
+              title: "정보를 불러올 수 없습니다",
+              thumbnail: "/placeholder-image.jpg",
+              place: "-",
+              startDate: "-",
+              endDate: "-",
+            },
+          };
+        }
+      })
+    );
+
+    return NextResponse.json(wishlistWithDetails);
   } catch (error) {
     console.error("Wishlist GET error:", error);
     return NextResponse.json(
