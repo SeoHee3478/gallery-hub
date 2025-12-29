@@ -1,7 +1,8 @@
-import { Exhibition } from "@/app/favorites/page";
+import { WishlistItem } from "@/app/favorites/page";
+import Image from "next/image";
 
 interface ExhibitionCardProps {
-  exhibition: Exhibition;
+  exhibition: WishlistItem;
   onRemove: (id: string) => void;
   onClick: (id: string) => void;
 }
@@ -28,7 +29,7 @@ export default function FavoritedExhibitionCard({
   return (
     <div
       className="bg-white rounded-2xl shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-      onClick={() => onClick(exhibition.id)}
+      onClick={() => onClick(exhibition.item_id)}
     >
       <div className="flex gap-4 p-4">
         {/* Image */}
@@ -36,15 +37,12 @@ export default function FavoritedExhibitionCard({
           <div className="w-[170px] h-[170px] bg-gray-800 rounded-xl overflow-hidden relative">
             {/* TODO: 실제 이미지로 교체*/}
             <div className="w-full h-full flex items-center justify-center">
-              {/* 임시 placeholder - 실제로는 다음과 같이 사용:
               <Image
-                src={exhibition.imageUrl}
-                alt={exhibition.title}
+                src={exhibition.details.imgUrl}
+                alt={exhibition.details.title}
                 fill
                 className="object-cover"
               />
-              */}
-              <span className="text-white text-xs">Image</span>
             </div>
           </div>
         </div>
@@ -53,9 +51,11 @@ export default function FavoritedExhibitionCard({
         <div className="flex-1 flex flex-col justify-between py-1 min-w-0">
           <div>
             <h3 className="text-lg font-bold text-gray-900 mb-2 leading-tight">
-              {exhibition.title}
+              {exhibition.details.title}
             </h3>
-            <p className="text-gray-600 text-sm mb-3">{exhibition.venue}</p>
+            <p className="text-gray-600 text-sm mb-3">
+              {exhibition.details.place}
+            </p>
           </div>
 
           <div className="flex items-center text-gray-500 text-sm">
@@ -74,7 +74,10 @@ export default function FavoritedExhibitionCard({
               <line x1="3" y1="10" x2="21" y2="10" />
             </svg>
             <span className="truncate">
-              {formatDate(exhibition.startDate, exhibition.endDate)}
+              {formatDate(
+                exhibition.details.startDate,
+                exhibition.details.endDate
+              )}
             </span>
           </div>
         </div>

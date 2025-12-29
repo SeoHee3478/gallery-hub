@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import FavoritedExhibitionList from "./FavoritedExhibitionList";
-import { Exhibition } from "../page";
+import { WishlistItem } from "../page";
 
 export default function FavoritedExhibitionsClient() {
-  const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
+  const [exhibitions, setExhibitions] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,17 +33,15 @@ export default function FavoritedExhibitionsClient() {
   }, []);
 
   // TODO: 전시 삭제 핸들러 구현
-  const handleRemoveExhibition = async (id: string) => {
+  const handleRemoveExhibition = async (itemId: string) => {
     try {
-      const response = await fetch("/api/wishlist", {
+      const response = await fetch(`/api/wishlist/${itemId}`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ item_id: id }),
       });
 
       if (response.ok) {
         // 삭제 성공 시 로컬 상태에서도 제거
-        setExhibitions(exhibitions.filter((ex) => ex.id !== id));
+        setExhibitions(exhibitions.filter((ex) => ex.item_id !== itemId));
       }
     } catch (error) {
       console.error("Failed to remove exhibition:", error);
@@ -51,8 +49,8 @@ export default function FavoritedExhibitionsClient() {
   };
 
   // TODO: 전시 클릭 핸들러 구현
-  const handleExhibitionClick = (id: string) => {
-    console.log("Navigate to exhibition:", id);
+  const handleExhibitionClick = (itemId: string) => {
+    console.log("Navigate to exhibition:", itemId);
     // 상세 페이지로 이동
     // router.push(`/exhibitions/${id}`);
   };

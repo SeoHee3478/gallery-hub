@@ -1,8 +1,8 @@
-import { Exhibition } from "@/app/favorites/page";
+import { WishlistItem } from "@/app/favorites/page";
 import FavoritedExhibitionCard from "./FavoritedExhibitionCad";
 
 interface SavedExhibitionListProps {
-  exhibitions: Exhibition[];
+  exhibitions: WishlistItem[];
   loading: boolean;
   onRemove: (id: string) => void;
   onExhibitionClick: (id: string) => void;
@@ -22,8 +22,7 @@ export default function FavoritedExhibitionList({
           <button
             className="p-2 -ml-2"
             onClick={() => {
-              // TODO: 뒤로가기 로직 구현
-              console.log("Go back");
+              window.history.back();
             }}
           >
             <svg
