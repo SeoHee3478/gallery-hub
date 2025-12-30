@@ -1,5 +1,10 @@
 import { WishlistItem } from "@/types/models/favoriteExhibition";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -142,7 +147,7 @@ export const useRemoveWishList = () => {
 };
 
 export const useWishList = () => {
-  return useQuery<WishlistItem[]>({
+  return useSuspenseQuery<WishlistItem[]>({
     queryKey: WISHLIST_KEYS.lists(),
     queryFn: wishlistAPI.list,
     staleTime: 1000 * 60 * 5, // 5분
