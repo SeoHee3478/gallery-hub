@@ -3,6 +3,13 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import sanitizeImageUrl from "@/lib/sanitizeImageUrl";
+import { Button } from "@/components/ui/button";
+import { Heart } from "lucide-react";
+import {
+  useAddWishList,
+  useCheckWishList,
+  useRemoveWishList,
+} from "@/hooks/useWishlist";
 
 export default function ExhibitionCard({ item }: { item: Exhibition }) {
   const [imageSrc, setImageSrc] = useState<string>(item.image);
@@ -11,11 +18,34 @@ export default function ExhibitionCard({ item }: { item: Exhibition }) {
   const locationText = area + (hasLocation ? ` | ${item.location}` : "");
   const showIcon = area || hasLocation;
 
+  const { data: checkWishListData, isLoading: checkWishListIsLoading } =
+    useCheckWishList(item.id);
+  const { mutate: addWishlist, isPending: addPending } = useAddWishList();
+  const { mutate: removeWishlist, isPending: removePending } =
+    useRemoveWishList();
+
+  const isWishlisted = checkWishListData?.isWishlisted ?? false;
+  const isPending = addPending || removePending;
+
   useEffect(() => {
     if (item?.image) {
       setImageSrc(sanitizeImageUrl(item?.image));
     }
   }, [item?.image]);
+
+  const onClickFavoriteBtn = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (isWishlisted) {
+      removeWishlist(item?.id);
+    } else {
+      addWishlist({
+        item_id: item?.id,
+        item_type: item?.category,
+      });
+    }
+  };
 
   return (
     <Link
@@ -39,10 +69,23 @@ export default function ExhibitionCard({ item }: { item: Exhibition }) {
         )}
 
         {/* Category Badge */}
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-3 flex items-center justify-between w-full px-4">
           <span className="inline-block px-3 py-1 bg-primary text-primary-foreground text-xs font-medium rounded-full">
             {item.category}
           </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClickFavoriteBtn}
+            className="rounded-full cursor-pointer hover:bg-currentColor bg-white/20 backdrop-blur-sm shadow-lg"
+            type="button"
+            disabled={isPending || checkWishListIsLoading}
+          >
+            <Heart
+              className="w-5 h-5"
+              fill={isWishlisted ? "currentColor" : "none"}
+            />
+          </Button>
         </div>
       </div>
 
