@@ -77,23 +77,14 @@ export async function GET() {
 // 찜 추가
 export async function POST(request: Request) {
   try {
-    console.log("POST /api/wishlist - Start");
-
     const supabase = await createClient();
-
-    console.log("Supabase client created:", !!supabase);
-    console.log("Supabase auth available:", !!supabase?.auth);
     const { item_id, item_type } = await request.json();
-    console.log("Request body:", { item_id, item_type });
 
     // 1. 로그인 확인
     const {
       data: { user },
       error: authError,
     } = await supabase.auth.getUser();
-
-    console.log("User:", user?.id);
-    console.log("Auth error:", authError);
 
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -112,9 +103,6 @@ export async function POST(request: Request) {
       ])
       .select()
       .single();
-
-    console.log("Insert result:", { data, error });
-    console.log("Error details:", error?.message, error?.code, error?.details);
 
     if (error) {
       // 중복 찜 시도
