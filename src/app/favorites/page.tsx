@@ -1,7 +1,7 @@
 "use client";
 
-import FavoritedExhibitionsClient from "./components/FavoritedExhibitionsClient";
+import FavoritedExhibitionsContainer from "./components/FavoritedExhibitionsContainer";
 
 export default function FavoritesPage() {
-  return <FavoritedExhibitionsClient />;
+  return <FavoritedExhibitionsContainer />;
 }
