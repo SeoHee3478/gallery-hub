@@ -1,3 +1,4 @@
+import { WishlistItem } from "@/types/models/favoriteExhibition";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -61,6 +62,20 @@ const wishlistAPI = {
     }
     return data;
   },
+
+  list: async (): Promise<WishlistItem[]> => {
+    const response = await fetch("/api/wishlist");
+    const data = await response.json();
+
+    if (!response.ok) {
+      const error = new Error(
+        data.message || "좋아요 취소에 실패하였습니다."
+      ) as ApiError;
+      error.status = response.status;
+      throw error;
+    }
+    return data.items || data || [];
+  },
 };
 
 export const useAddWishList = () => {
@@ -123,5 +138,16 @@ export const useRemoveWishList = () => {
 
       toast.error(error.message || "좋아요 취소에 실패했습니다.");
     },
+  });
+};
+
+export const useWishList = () => {
+  return useQuery<WishlistItem[]>({
+    queryKey: WISHLIST_KEYS.lists(),
+    queryFn: wishlistAPI.list,
+    staleTime: 1000 * 60 * 5, // 5분
+    gcTime: 1000 * 60 * 10, // 10분
+    retry: 1,
+    refetchOnWindowFocus: false,
   });
 };
