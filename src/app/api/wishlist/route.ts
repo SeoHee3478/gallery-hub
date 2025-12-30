@@ -1,3 +1,4 @@
+import { getBaseUrl } from "@/lib/getBaseUrl";
 import { createClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
 
@@ -27,14 +28,14 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    const baseUrl = getBaseUrl();
+
     // 각 item의 상세 정보 병렬로 가져오기
     const wishlistWithDetails = await Promise.all(
       wishlist.map(async (item) => {
         try {
           const response = await fetch(
-            `${
-              process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-            }/api/exhibitions/${item.item_id}`,
+            `${baseUrl}/api/exhibitions/${item.item_id}`,
             { next: { revalidate: 3600 } }
           );
 
