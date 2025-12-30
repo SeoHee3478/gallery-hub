@@ -1,5 +1,7 @@
 import { WishlistItem } from "@/types/models/favoriteExhibition";
 import { Exhibition } from "@/types/models/exhibition";
+import he from "he";
+import formatDate from "./formatDate";
 
 // utils/exhibitionAdapter.ts
 export const convertWishlistToExhibition = (
@@ -9,9 +11,9 @@ export const convertWishlistToExhibition = (
 
   return {
     id: Number(details.seq),
-    title: details.title,
+    title: he.decode(details.title),
     location: details.place,
-    date: `${details.startDate} - ${details.endDate}`,
+    date: `${formatDate(details.startDate)} - ${formatDate(details.endDate)}`,
     category: details.realmName,
     image: details.imgUrl,
     region: details.area,
