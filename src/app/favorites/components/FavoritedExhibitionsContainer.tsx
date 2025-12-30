@@ -14,5 +14,9 @@ export default function FavoritedExhibitionsContainer() {
       </div>
     );
   const exhibitionData = convertWishlistArrayToExhibitions(data);
-  return <ExhibitionList data={exhibitionData} />;
+  return (
+    <div className="w-full max-w-5xl flex flex-col items-center gap-2">
+      <ExhibitionList data={exhibitionData} />
+    </div>
+  );
 }
