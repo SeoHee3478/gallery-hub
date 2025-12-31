@@ -1,8 +1,20 @@
 "use client";
 
 import { Suspense } from "react";
-import FavoritedExhibitionsContainer from "./components/FavoritedExhibitionsContainer";
 import { ErrorBoundary } from "react-error-boundary";
+import dynamic from "next/dynamic";
+
+const FavoritedExhibitionsContainer = dynamic(
+  () => import("./components/FavoritedExhibitionsContainer"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full max-w-5xl flex justify-center items-center min-h-screen">
+        <p className="text-xl">로딩 중...</p>
+      </div>
+    ),
+  }
+);
 
 export default function FavoritesPage() {
   return (

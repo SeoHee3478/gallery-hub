@@ -69,7 +69,9 @@ const wishlistAPI = {
   },
 
   list: async (): Promise<WishlistItem[]> => {
-    const response = await fetch("/api/wishlist");
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL || ""}/api/wishlist`
+    );
     const data = await response.json();
 
     if (!response.ok) {
