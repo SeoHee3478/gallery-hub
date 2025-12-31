@@ -1,3 +1,4 @@
+import { getBaseUrl } from "@/lib/getBaseUrl";
 import { createClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
 
@@ -17,7 +18,7 @@ export async function GET() {
     }
 
     // 2. 찜 목록 가져오기
-    const { data, error } = await supabase
+    const { data: wishlist, error } = await supabase
       .from("wishlists")
       .select("*")
       .eq("user_id", user.id)
@@ -27,7 +28,43 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json(data);
+    const baseUrl = getBaseUrl();
+
+    // 각 item의 상세 정보 병렬로 가져오기
+    const wishlistWithDetails = await Promise.all(
+      wishlist.map(async (item) => {
+        try {
+          const response = await fetch(
+            `${baseUrl}/api/exhibitions/${item.item_id}`,
+            { next: { revalidate: 3600 } }
+          );
+
+          if (!response.ok) throw new Error("Failed to fetch");
+
+          const details = await response.json();
+
+          return {
+            ...item,
+            details,
+          };
+        } catch (error) {
+          // 에러 발생 시 기본값 반환
+          console.error(error);
+          return {
+            ...item,
+            details: {
+              title: "정보를 불러올 수 없습니다",
+              thumbnail: "/placeholder-image.jpg",
+              place: "-",
+              startDate: "-",
+              endDate: "-",
+            },
+          };
+        }
+      })
+    );
+
+    return NextResponse.json(wishlistWithDetails);
   } catch (error) {
     console.error("Wishlist GET error:", error);
     return NextResponse.json(
@@ -40,23 +77,14 @@ export async function GET() {
 // 찜 추가
 export async function POST(request: Request) {
   try {
-    console.log("POST /api/wishlist - Start");
-
     const supabase = await createClient();
-
-    console.log("Supabase client created:", !!supabase);
-    console.log("Supabase auth available:", !!supabase?.auth);
     const { item_id, item_type } = await request.json();
-    console.log("Request body:", { item_id, item_type });
 
     // 1. 로그인 확인
     const {
       data: { user },
       error: authError,
     } = await supabase.auth.getUser();
-
-    console.log("User:", user?.id);
-    console.log("Auth error:", authError);
 
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -75,9 +103,6 @@ export async function POST(request: Request) {
       ])
       .select()
       .single();
-
-    console.log("Insert result:", { data, error });
-    console.log("Error details:", error?.message, error?.code, error?.details);
 
     if (error) {
       // 중복 찜 시도

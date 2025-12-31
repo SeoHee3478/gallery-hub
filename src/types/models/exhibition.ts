@@ -1,5 +1,5 @@
 export interface Exhibition {
-  id: number;
+  id: string;
   title: string;
   location: string;
   date: string;

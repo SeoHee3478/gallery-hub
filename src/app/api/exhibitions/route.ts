@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
 
     const exhibitions: Exhibition[] = itemsArray.map(
       (item: RawExhibitionItem) => ({
-        id: Number(item.seq),
+        id: item.seq,
         title: he.decode(item.title),
         location: item.place,
         date: `${formatDate(item.startDate)} - ${formatDate(item.endDate)}`,

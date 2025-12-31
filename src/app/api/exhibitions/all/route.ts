@@ -91,7 +91,7 @@ export async function GET() {
     // 4. 수집된 전체 데이터(allItems)를 원하는 형식으로 변환
     const exhibitions: Exhibition[] = allItems.map(
       (item: RawExhibitionItem) => ({
-        id: Number(item.seq),
+        id: item.seq,
         title: he.decode(item.title),
         location: item.place,
         date: `${formatDate(item.startDate)} - ${formatDate(item.endDate)}`,
