@@ -5,26 +5,25 @@ import Link from "next/link";
 import sanitizeImageUrl from "@/lib/sanitizeImageUrl";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
-import {
-  useAddWishList,
-  useCheckWishList,
-  useRemoveWishList,
-} from "@/hooks/useWishlist";
+import { useAddWishList, useRemoveWishList } from "@/hooks/useWishlist";
 
-export default function ExhibitionCard({ item }: { item: Exhibition }) {
+export default function ExhibitionCard({
+  item,
+  isWishlisted = false,
+}: {
+  item: Exhibition;
+  isWishlisted?: boolean;
+}) {
   const [imageSrc, setImageSrc] = useState<string>(item.image);
   const area = [item.region, item.specificRegion].filter(Boolean).join(" ");
   const hasLocation = Boolean(item.location);
   const locationText = area + (hasLocation ? ` | ${item.location}` : "");
   const showIcon = area || hasLocation;
 
-  const { data: checkWishListData, isLoading: checkWishListIsLoading } =
-    useCheckWishList(item.id);
   const { mutate: addWishlist, isPending: addPending } = useAddWishList();
   const { mutate: removeWishlist, isPending: removePending } =
     useRemoveWishList();
 
-  const isWishlisted = checkWishListData?.isWishlisted ?? false;
   const isPending = addPending || removePending;
 
   useEffect(() => {
@@ -79,7 +78,7 @@ export default function ExhibitionCard({ item }: { item: Exhibition }) {
             onClick={onClickFavoriteBtn}
             className="rounded-full cursor-pointer hover:bg-currentColor bg-white/20 backdrop-blur-sm shadow-lg"
             type="button"
-            disabled={isPending || checkWishListIsLoading}
+            disabled={isPending}
           >
             <Heart
               className="w-5 h-5"

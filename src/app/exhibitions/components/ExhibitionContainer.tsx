@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useExhibitions } from "@/hooks/useExhibitions";
+import { useWishList } from "@/hooks/useWishlist";
 import CategoryFilter from "./CategoryFilter";
 import ExhibitionList from "./ExhibitionList";
 import Spacer from "@/components/ui/Spacer";
@@ -14,6 +15,10 @@ export default function ExhibitionContainer() {
   // 무한스크롤 데이터 fetching
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useExhibitions();
+  const { data: wishlistData } = useWishList();
+  const wishlistedIds = new Set(
+    wishlistData?.map((item) => item.item_id) || []
+  );
 
   const observerTarget = useRef<HTMLDivElement>(null);
 
@@ -69,7 +74,7 @@ export default function ExhibitionContainer() {
       />
       <Spacer height={32} />
       {/* <MapView data={filteredData} /> */}
-      <ExhibitionList data={filteredData} />
+      <ExhibitionList data={filteredData} wishlistedIds={wishlistedIds} />
 
       {/* 무한스크롤 트리거 영역 */}
       <div
