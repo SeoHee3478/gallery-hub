@@ -10,7 +10,7 @@ export const convertWishlistToExhibition = (
   const details = wishlistItem.details;
 
   return {
-    id: Number(details.seq),
+    id: details.seq,
     title: he.decode(details.title),
     location: details.place,
     date: `${formatDate(details.startDate)} - ${formatDate(details.endDate)}`,
