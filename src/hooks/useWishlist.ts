@@ -155,7 +155,7 @@ export const useRemoveWishList = () => {
 };
 
 export const useWishList = () => {
-  return useSuspenseQuery<WishlistItem[]>({
+  return useQuery<WishlistItem[]>({
     queryKey: WISHLIST_KEYS.lists(),
     queryFn: wishlistAPI.list,
     staleTime: 1000 * 60 * 5, // 5분
