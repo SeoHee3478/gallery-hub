@@ -104,14 +104,14 @@ export function LoginForm() {
             </div>
           )}
           {/* Forgot Password Link */}
-          <div className="text-right">
+          {/* <div className="text-right">
             <a
               href="/forgot-password"
               className="text-sm font-medium text-gray-600 hover:text-blue-700"
             >
               비밀번호 찾기
             </a>
-          </div>
+          </div> */}
 
           {/* Login Button */}
           <Button
@@ -124,16 +124,16 @@ export function LoginForm() {
         </form>
 
         {/* Divider */}
-        <div className="my-6 flex items-center gap-3">
+        {/* <div className="my-6 flex items-center gap-3">
           <div className="flex-1 border-t border-gray-300"></div>
           <span className="text-sm text-gray-600 font-medium">OR</span>
           <div className="flex-1 border-t border-gray-300"></div>
-        </div>
+        </div> */}
 
         {/* Social Login Buttons */}
-        <div className="space-y-3">
-          {/* Google */}
-          <Button
+        {/* <div className="space-y-3"> */}
+        {/* Google */}
+        {/* <Button
             type="button"
             variant="outline"
             className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 bg-transparent"
@@ -172,10 +172,10 @@ export function LoginForm() {
               </g>
             </svg>
             구글 계정으로 로그인하기
-          </Button>
+          </Button> */}
 
-          {/* Kakao */}
-          <Button
+        {/* Kakao */}
+        {/* <Button
             type="button"
             className="w-full bg-yellow-300 hover:bg-yellow-400 text-gray-900 font-medium"
             onClick={() => handleSocialLogin("Kakao")}
@@ -189,10 +189,10 @@ export function LoginForm() {
               ></path>
             </svg>
             카카오 계정으로 로그인하기
-          </Button>
+          </Button> */}
 
-          {/* Naver */}
-          <Button
+        {/* Naver */}
+        {/* <Button
             type="button"
             className="w-full bg-green-500 hover:bg-green-600 text-white font-medium"
             onClick={() => handleSocialLogin("Naver")}
@@ -211,7 +211,7 @@ export function LoginForm() {
             </svg>
             네이버 계정으로 계속하기
           </Button>
-        </div>
+        </div> */}
 
         {/* Sign Up Link */}
         <div className="mt-6 text-center">
