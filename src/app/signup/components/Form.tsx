@@ -161,16 +161,16 @@ export default function SignupForm() {
           </Button>
         </form>
         {/* Divider */}
-        <div className="my-6 flex items-center gap-3">
+        {/* <div className="my-6 flex items-center gap-3">
           <div className="flex-1 border-t border-gray-300"></div>
           <span className="text-sm text-gray-600 font-medium">OR</span>
           <div className="flex-1 border-t border-gray-300"></div>
-        </div>
+        </div> */}
 
         {/* Social Signup Buttons */}
-        <div className="space-y-3">
-          {/* Google */}
-          <Button
+        {/* <div className="space-y-3"> */}
+        {/* Google */}
+        {/* <Button
             type="button"
             variant="outline"
             className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 bg-transparent"
@@ -209,10 +209,10 @@ export default function SignupForm() {
               </g>
             </svg>
             구글 계정으로 가입하기
-          </Button>
+          </Button> */}
 
-          {/* Kakao */}
-          <Button
+        {/* Kakao */}
+        {/* <Button
             type="button"
             className="w-full bg-yellow-300 hover:bg-yellow-400 text-gray-900 font-medium"
             onClick={() => handleSocialSignup("Kakao")}
@@ -226,10 +226,10 @@ export default function SignupForm() {
               ></path>
             </svg>
             카카오 계정으로 가입하기
-          </Button>
+          </Button> */}
 
-          {/* Naver */}
-          <Button
+        {/* Naver */}
+        {/* <Button
             type="button"
             className="w-full bg-green-500 hover:bg-green-600 text-white font-medium"
             onClick={() => handleSocialSignup("Naver")}
@@ -248,7 +248,7 @@ export default function SignupForm() {
             </svg>
             네이버 계정으로 가입하기
           </Button>
-        </div>
+        </div> */}
 
         {/* Login Link */}
         <div className="mt-6 text-center">

@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { getBaseUrl } from "@/lib/getBaseUrl";
 
 interface ApiError extends Error {
   status?: number;
@@ -22,7 +23,7 @@ const WISHLIST_KEYS = {
 
 const wishlistAPI = {
   add: async (params: { item_id: string; item_type: string }) => {
-    const response = await fetch("/api/wishlist", {
+    const response = await fetch(`${getBaseUrl()}/api/wishlist`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(params),
@@ -40,7 +41,9 @@ const wishlistAPI = {
   },
 
   check: async (itemId: string) => {
-    const response = await fetch(`/api/wishlist/check/${itemId}`);
+    const response = await fetch(
+      `${getBaseUrl()}/api/wishlist/check/${itemId}`
+    );
 
     if (!response.ok) {
       if (response.status === 401) {
@@ -53,7 +56,7 @@ const wishlistAPI = {
   },
 
   remove: async (itemId: string) => {
-    const response = await fetch(`/api/wishlist/${itemId}`, {
+    const response = await fetch(`${getBaseUrl()}/api/wishlist/${itemId}`, {
       method: "DELETE",
     });
 
@@ -69,12 +72,17 @@ const wishlistAPI = {
   },
 
   list: async (): Promise<WishlistItem[]> => {
-    const response = await fetch(`/api/wishlist`);
+    const response = await fetch(`${getBaseUrl()}/api/wishlist`);
+
+    if (response.status === 401) {
+      return [];
+    }
+
     const data = await response.json();
 
     if (!response.ok) {
       const error = new Error(
-        data.message || "좋아요 취소에 실패하였습니다."
+        data.message || "좋아요 리스트 불러오기에 실패하였습니다."
       ) as ApiError;
       error.status = response.status;
       throw error;
@@ -147,7 +155,7 @@ export const useRemoveWishList = () => {
 };
 
 export const useWishList = () => {
-  return useSuspenseQuery<WishlistItem[]>({
+  return useQuery<WishlistItem[]>({
     queryKey: WISHLIST_KEYS.lists(),
     queryFn: wishlistAPI.list,
     staleTime: 1000 * 60 * 5, // 5분

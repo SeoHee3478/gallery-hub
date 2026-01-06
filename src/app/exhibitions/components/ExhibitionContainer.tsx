@@ -15,10 +15,8 @@ export default function ExhibitionContainer() {
   // 무한스크롤 데이터 fetching
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useExhibitions();
-  const { data: wishlistData } = useWishList();
-  const wishlistedIds = new Set(
-    wishlistData?.map((item) => item.item_id) || []
-  );
+  const { data: wishlistData = [], isLoading } = useWishList();
+  const wishlistedIds = new Set(wishlistData.map((item) => item.item_id));
 
   const observerTarget = useRef<HTMLDivElement>(null);
 
@@ -59,6 +57,10 @@ export default function ExhibitionContainer() {
 
     return filteredCategory && filteredRegion;
   });
+
+  if (isLoading) {
+    return <div>로딩중...</div>;
+  }
 
   return (
     <div className="w-full max-w-5xl flex flex-col items-center gap-2">

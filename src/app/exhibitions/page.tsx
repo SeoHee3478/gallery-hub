@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 3600;
 
 export default function ExhibitionPage() {
   return (
