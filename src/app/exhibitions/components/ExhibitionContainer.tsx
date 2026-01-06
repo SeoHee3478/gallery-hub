@@ -15,8 +15,14 @@ export default function ExhibitionContainer() {
   // 무한스크롤 데이터 fetching
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useExhibitions();
-  const { data: wishlistData = [], isLoading } = useWishList();
-  const wishlistedIds = new Set(wishlistData.map((item) => item.item_id));
+  const {
+    data: wishlistData = [],
+    isLoading,
+    isError: wishlistError,
+  } = useWishList();
+  const wishlistedIds = new Set(
+    wishlistError ? [] : wishlistData.map((item) => item.item_id)
+  );
 
   const observerTarget = useRef<HTMLDivElement>(null);
 
