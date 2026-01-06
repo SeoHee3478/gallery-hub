@@ -3,12 +3,25 @@
 import ExhibitionList from "@/app/exhibitions/components/ExhibitionList";
 import { convertWishlistArrayToExhibitions } from "@/lib/exhibitionAdapter";
 import { useWishList } from "@/hooks/useWishlist";
+import { useEffect } from "react";
 
 export default function FavoritedExhibitionsContainer() {
-  const { data, isLoading } = useWishList();
+  const { data, isLoading, isError, isFetching, refetch } = useWishList();
 
-  if (isLoading) {
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  if (isLoading || isFetching) {
     return <div>로딩중...</div>;
+  }
+
+  if (isError) {
+    return (
+      <div className="text-center py-20">
+        <p className="text-red-500">데이터를 불러오는데 실패했습니다</p>
+      </div>
+    );
   }
 
   if (!data || data?.length === 0)

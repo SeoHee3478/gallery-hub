@@ -158,7 +158,7 @@ export const useWishList = () => {
   return useQuery<WishlistItem[]>({
     queryKey: WISHLIST_KEYS.lists(),
     queryFn: wishlistAPI.list,
-    staleTime: 1000 * 60 * 5, // 5분
+    staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 10, // 10분
     retry: 1,
     refetchOnWindowFocus: false,
