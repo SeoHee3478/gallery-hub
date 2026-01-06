@@ -1,80 +1,50 @@
-import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
+import { createClient } from "@/lib/supabase-server";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const data = await request.json();
-    const { id, pw } = data;
+    const { id, pw } = await request.json();
 
     // id, pw 누락 체크
     if (!id || !pw) {
-      return new Response(
-        JSON.stringify({ message: "아이디와 비밀번호를 입력해주세요." }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+      return NextResponse.json(
+        { message: "아이디와 비밀번호를 입력해주세요." },
+        { status: 400 }
       );
     }
 
-    console.log("receive data:", data, "id/pw", id, pw);
-    // password 검증 로직 추후에 db로 변경
-    if (pw === "1234") {
-      const user = { email: id };
+    const supabase = await createClient();
 
-      const token = jwt.sign({ email: id }, `${process.env.JWT_SECRET}`, {
-        expiresIn: "1h",
-      });
-      console.log(token);
-      const isProduction = process.env.NODE_ENV === "production";
+    // Supabase Auth로 로그인 (비밀번호 자동 검증)
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: id, // 프론트에서 id로 보내는 게 email
+      password: pw,
+    });
 
-      // 쿠키 설정
-      const cookieStore = await cookies();
-      cookieStore.set({
-        name: "token",
-        value: token,
-        httpOnly: true, // JavaScript로 접근 불가(XSS 방어)
-        secure: isProduction,
-        sameSite: "strict", // CSRF 방어
-        maxAge: 3600, // 1시간
-        path: "/",
-      });
-      return new Response(
-        JSON.stringify({
-          message: "로그인 되었습니다.",
-          token: token,
-          user: user,
-        }),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } else {
-      return new Response(
-        JSON.stringify({ message: "잘못된 비밀번호입니다." }),
-        {
-          status: 401,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+    if (error) {
+      console.error("Login error:", error);
+      return NextResponse.json(
+        { message: "이메일 또는 비밀번호가 일치하지 않습니다." },
+        { status: 401 }
       );
     }
+
+    return NextResponse.json(
+      {
+        message: "로그인 되었습니다.",
+        user: {
+          id: data.user.id,
+          email: data.user.email,
+          name: data.user.user_metadata?.name,
+        },
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Login error:", error);
-    return new Response(
-      JSON.stringify({ message: "서버 오류가 발생했습니다." }),
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+    return NextResponse.json(
+      { message: "서버 오류가 발생했습니다." },
+      { status: 500 }
     );
   }
 }

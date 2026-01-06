@@ -1,39 +1,42 @@
 "use client";
 
-import type React from "react";
-
-import { useEffect, useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { useLogin } from "@/hooks/useLogin";
-import { useSearchParams } from "next/navigation";
-import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
+import { useSignup } from "@/hooks/useSignup";
 
-export function LoginForm() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { mutate: login, isPending, error, isError } = useLogin();
+export default function SignupForm() {
+  const { mutate: signup, isPending } = useSignup();
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
+  const [error, setError] = useState("");
 
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    const redirect = searchParams.get("redirect");
-    if (redirect === "true") {
-      toast.error("로그인이 필요합니다.");
-    }
-  }, [searchParams]);
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    login({ id: email, pw: password });
+    // 검증 로직
+    if (password !== confirmPassword) {
+      setError("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("비밀번호는 8자 이상으로 입력해주세요.");
+      return;
+    }
+    signup({ name, email, password });
   };
 
-  const handleSocialLogin = (provider: string) => {
-    console.log(`Login with ${provider}`);
+  const handleSocialSignup = (provider: string) => {
+    // TODO: 소셜 회원가입 로직 구현
+    console.log(`Sign up with ${provider}`);
   };
 
   return (
@@ -41,13 +44,30 @@ export function LoginForm() {
       <CardContent className="pt-8">
         {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-gray-900">로그인 하기</h1>
+          <h1 className="text-2xl font-bold text-gray-900">회원가입 하기</h1>
           <p className="mt-2 text-sm text-gray-600">
-            로그인하고 갤러리 허브를 탐색해보세요.
+            갤러리 허브에 가입하고 다양한 작품을 감상해보세요.
           </p>
         </div>
-        {/* Login Form */}
-        <form onSubmit={handleLogin} className="space-y-4">
+
+        {/* Signup Form */}
+        <form onSubmit={handleSignup} className="space-y-4">
+          {/* Name */}
+          <div className="space-y-2">
+            <label htmlFor="name" className="text-sm font-medium text-gray-700">
+              이름
+            </label>
+            <Input
+              type="text"
+              id="name"
+              placeholder="이름을 입력하세요"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="bg-gray-50"
+            />
+          </div>
+
           {/* Email */}
           <div className="space-y-2">
             <label
@@ -98,31 +118,48 @@ export function LoginForm() {
               </button>
             </div>
           </div>
-          {isError && (
-            <div className="text-red-500 text-sm">
-              {error?.message || "로그인에 실패했습니다."}
-            </div>
-          )}
-          {/* Forgot Password Link */}
-          {/* <div className="text-right">
-            <a
-              href="/forgot-password"
-              className="text-sm font-medium text-gray-600 hover:text-blue-700"
-            >
-              비밀번호 찾기
-            </a>
-          </div> */}
 
-          {/* Login Button */}
+          {/* Confirm Password */}
+          <div className="space-y-2">
+            <label
+              htmlFor="confirmPassword"
+              className="text-sm font-medium text-gray-700"
+            >
+              비밀번호 확인
+            </label>
+            <div className="relative">
+              <Input
+                id="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="비밀번호를 다시 입력하세요"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                className="bg-gray-50 pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                {showConfirmPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
+          </div>
+          {error && <p className="text-red-500 font-medium text-sm">{error}</p>}
+          {/* Signup Button */}
           <Button
             type="submit"
             className="w-full bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 cursor-pointer"
             disabled={isPending}
           >
-            {isPending ? "로그인 중..." : "로그인"}
+            회원가입
           </Button>
         </form>
-
         {/* Divider */}
         {/* <div className="my-6 flex items-center gap-3">
           <div className="flex-1 border-t border-gray-300"></div>
@@ -130,14 +167,14 @@ export function LoginForm() {
           <div className="flex-1 border-t border-gray-300"></div>
         </div> */}
 
-        {/* Social Login Buttons */}
+        {/* Social Signup Buttons */}
         {/* <div className="space-y-3"> */}
         {/* Google */}
         {/* <Button
             type="button"
             variant="outline"
             className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 bg-transparent"
-            onClick={() => handleSocialLogin("Google")}
+            onClick={() => handleSocialSignup("Google")}
           >
             <svg viewBox="0 0 16 16" width="16" height="16" fill="none">
               <g id="Group">
@@ -171,14 +208,14 @@ export function LoginForm() {
                 ></path>
               </g>
             </svg>
-            구글 계정으로 로그인하기
+            구글 계정으로 가입하기
           </Button> */}
 
         {/* Kakao */}
         {/* <Button
             type="button"
             className="w-full bg-yellow-300 hover:bg-yellow-400 text-gray-900 font-medium"
-            onClick={() => handleSocialLogin("Kakao")}
+            onClick={() => handleSocialSignup("Kakao")}
           >
             <svg viewBox="0 0 21 20" width="21" height="20" fill="none">
               <path
@@ -188,14 +225,14 @@ export function LoginForm() {
                 fill="#181600"
               ></path>
             </svg>
-            카카오 계정으로 로그인하기
+            카카오 계정으로 가입하기
           </Button> */}
 
         {/* Naver */}
         {/* <Button
             type="button"
             className="w-full bg-green-500 hover:bg-green-600 text-white font-medium"
-            onClick={() => handleSocialLogin("Naver")}
+            onClick={() => handleSocialSignup("Naver")}
           >
             <svg
               width="16"
@@ -209,19 +246,19 @@ export function LoginForm() {
                 fill="white"
               />
             </svg>
-            네이버 계정으로 계속하기
+            네이버 계정으로 가입하기
           </Button>
         </div> */}
 
-        {/* Sign Up Link */}
+        {/* Login Link */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
-            {"계정이 없으신가요? "}
+            {"이미 계정이 있으신가요? "}
             <a
-              href="/signup"
+              href="/login"
               className="font-semibold text-gray-900 hover:text-blue-700"
             >
-              회원가입하기
+              로그인하기
             </a>
           </p>
         </div>

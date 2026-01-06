@@ -1,8 +1,10 @@
+import { memo } from "react";
+
 interface ExhibitionTagsProps {
   tags: string[];
 }
 
-export function ExhibitionTags({ tags }: ExhibitionTagsProps) {
+export const ExhibitionTags = memo(({ tags }: ExhibitionTagsProps) => {
   return (
     <div className="flex flex-wrap gap-2">
       {tags
@@ -17,4 +19,6 @@ export function ExhibitionTags({ tags }: ExhibitionTagsProps) {
         ))}
     </div>
   );
-}
+});
+
+ExhibitionTags.displayName = "ExhibitionTags";

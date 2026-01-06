@@ -14,7 +14,9 @@ const NUM_OF_ROWS = 20; // 한 번에 가져올 데이터 수
 async function fetchAndParseXml(
   url: string
 ): Promise<PublicApiExhibitionResponse> {
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    next: { revalidate: 3600 },
+  });
   const xmlText = await response.text();
   const parser = new xml2js.Parser({ explicitArray: false });
   const result = (await parser.parseStringPromise(
@@ -59,7 +61,7 @@ export async function GET(request: NextRequest) {
 
     const exhibitions: Exhibition[] = itemsArray.map(
       (item: RawExhibitionItem) => ({
-        id: Number(item.seq),
+        id: item.seq,
         title: he.decode(item.title),
         location: item.place,
         date: `${formatDate(item.startDate)} - ${formatDate(item.endDate)}`,
