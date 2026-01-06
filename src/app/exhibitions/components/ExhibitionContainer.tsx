@@ -13,10 +13,23 @@ export default function ExhibitionContainer() {
   const [selectedRegion, setSelectedRegion] = useState("전체");
 
   // 무한스크롤 데이터 fetching
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useExhibitions();
-  const { data: wishlistData = [], isLoading } = useWishList();
-  const wishlistedIds = new Set(wishlistData.map((item) => item.item_id));
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading: exhibitionsLoading,
+  } = useExhibitions();
+
+  // wishlist는 에러가 나도 괜찮도록 처리
+  const { data: wishlistData = [], isError: wishlistError } = useWishList();
+
+  // wishlist 에러가 나도 빈 Set으로 처리
+  const wishlistedIds = new Set(
+    wishlistError || !wishlistData
+      ? []
+      : wishlistData.map((item) => item.item_id)
+  );
 
   const observerTarget = useRef<HTMLDivElement>(null);
 
@@ -46,7 +59,6 @@ export default function ExhibitionContainer() {
   // 모든 페이지의 전시 데이터를 하나의 배열로 병합
   const allExhibitions = data?.pages.flatMap((page) => page.exhibitions) ?? [];
 
-  // 필터링 로직 (기존과 동일)
   const filteredData = allExhibitions.filter((item) => {
     if (selectedCategory === "전체" && selectedRegion === "전체") return true;
 
@@ -58,8 +70,13 @@ export default function ExhibitionContainer() {
     return filteredCategory && filteredRegion;
   });
 
-  if (isLoading) {
-    return <div>로딩중...</div>;
+  // 전시 목록 로딩만 체크 (wishlist 로딩은 무시)
+  if (exhibitionsLoading) {
+    return (
+      <div className="w-full flex justify-center items-center py-20">
+        <p className="text-xl">로딩중...</p>
+      </div>
+    );
   }
 
   return (

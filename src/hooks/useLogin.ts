@@ -1,11 +1,12 @@
 import { useAuthStore } from "@/store/useAuthStore";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export function useLogin() {
   const router = useRouter();
   const { login: setAuthState } = useAuthStore();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (credentials: { id: string; pw: string }) => {
@@ -23,9 +24,11 @@ export function useLogin() {
         throw new Error(data.message || "로그인에 실패했습니다.");
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       toast.success("로그인 성공!");
       setAuthState(data.user.email);
+      await queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+      await queryClient.refetchQueries({ queryKey: ["wishlist"] });
       router.push("/exhibitions");
     },
     onError: (error: Error) => {
