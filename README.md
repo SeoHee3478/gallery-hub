@@ -171,44 +171,7 @@ export const dynamic = 'force-dynamic';
 
 <br />
 
-## 로컬 실행 방법
-
-### 1. 저장소 클론
-```bash
-git clone https://github.com/SeoHee3478/gallery-hub.git
-cd gallery-hub
-```
-
-### 2. 의존성 설치
-```bash
-npm install
-```
-
-### 3. 환경 변수 설정
-`.env.local` 파일을 생성하고 아래 내용을 추가하세요
-
-```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-
-# Base URL
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
-
-# 공공데이터 API
-NEXT_PUBLIC_API_KEY=your_api_key
-```
-
-### 4. 개발 서버 실행
-```bash
-npm run dev
-```
-
-브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인하세요.
-
-<br />
-
-## 📁 프로젝트 구조
+## 프로젝트 구조
 
 ```
 gallery-hub/
