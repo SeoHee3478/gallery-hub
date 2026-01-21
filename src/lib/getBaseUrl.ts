@@ -4,14 +4,6 @@ export function getBaseUrl() {
     return "";
   }
 
-  // 서버 환경
-  if (process.env.NODE_ENV === "production") {
-    return (
-      process.env.NEXT_PUBLIC_SITE_URL || "https://gallery-hub-xi.vercel.app"
-    );
-  }
-
-  // 개발 환경
-
-  return "http://localhost:3000";
+  // 서버 환경 - 환경변수만 사용
+  return process.env.NEXT_PUBLIC_SITE_URL || "";
 }
