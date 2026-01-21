@@ -1,13 +1,9 @@
 import { ExhibitionDetail } from "@/types/api/exhibitionDetail";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { getBaseUrl } from "@/lib/getBaseUrl";
 
 async function fetchExhibitionsDetail(id: string): Promise<ExhibitionDetail> {
-  const baseUrl =
-    typeof window === "undefined"
-      ? process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000"
-      : "";
+  const baseUrl = getBaseUrl();
 
   const response = await fetch(`${baseUrl}/api/exhibitions/${id}`);
   if (!response.ok) {
