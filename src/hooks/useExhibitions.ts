@@ -1,5 +1,6 @@
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { Exhibition } from "@/types/models/exhibition";
+import { getBaseUrl } from "@/lib/getBaseUrl";
 
 interface ExhibitionsResponse {
   exhibitions: Exhibition[];
@@ -9,13 +10,10 @@ interface ExhibitionsResponse {
 }
 
 async function fetchExhibitions(page: number): Promise<ExhibitionsResponse> {
-  const baseUrl =
-    typeof window === "undefined"
-      ? process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-      : "";
+  const baseUrl = getBaseUrl();
 
   const response = await fetch(
-    `${baseUrl}/api/exhibitions?page=${page}&limit=20`
+    `${baseUrl}/api/exhibitions?page=${page}&limit=20`,
   );
   if (!response.ok) {
     throw new Error("Failed to fetch exhibitions");
