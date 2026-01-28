@@ -87,13 +87,13 @@
 
 #### 해결 방법
 ```typescript
-// ❌ Before: useEffect로 이미지 교체
+//  Before: useEffect로 이미지 교체
 const [imageSrc, setImageSrc] = useState('/placeholder.jpg');
 useEffect(() => {
   setImageSrc(exhibition.mainImage);
 }, [exhibition.mainImage]);
 
-// ✅ After: useMemo로 최초 렌더 시점에 이미지 확정
+//  After: useMemo로 최초 렌더 시점에 이미지 확정
 const imageSrc = useMemo(() => {
   return exhibition.mainImage || '/placeholder.jpg';
 }, [exhibition.mainImage]);
@@ -118,7 +118,7 @@ const imageSrc = useMemo(() => {
 
 #### 해결 방법
 ```tsx
-// ✅ useSearchParams 사용 컴포넌트를 Suspense로 감싸서 해결
+//  useSearchParams 사용 컴포넌트를 Suspense로 감싸서 해결
 <Suspense fallback={<div>Loading...</div>}>
   <LoginForm />
 </Suspense>
@@ -211,9 +211,3 @@ gallery-hub/
 
 <br />
 
-
-## 👤 개발자
-
-**SeoHee**
-- GitHub: [@SeoHee3478](https://github.com/SeoHee3478)
-- Blog: [코드의 바다에서 항해하기](https://seoya.tistory.com)
