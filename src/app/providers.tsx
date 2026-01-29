@@ -2,7 +2,9 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuthStore } from "@/store/useAuthStore";
+import { supabase } from "@/lib/supabase";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -18,8 +20,23 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             retry: 1,
           },
         },
-      })
+      }),
   );
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const { isLoggedIn, logout } = useAuthStore.getState();
+
+      if (!user && isLoggedIn) {
+        logout();
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -1,13 +1,9 @@
 import { WishlistItem } from "@/types/models/favoriteExhibition";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { getBaseUrl } from "@/lib/getBaseUrl";
+import { useAuthStore } from "@/store/useAuthStore";
 
 interface ApiError extends Error {
   status?: number;
@@ -32,7 +28,7 @@ const wishlistAPI = {
     const data = await response.json();
     if (!response.ok) {
       const error = new Error(
-        data.message || "좋아요 담기에 실패하였습니다."
+        data.message || "좋아요 담기에 실패하였습니다.",
       ) as ApiError;
       error.status = response.status;
       throw error;
@@ -42,7 +38,7 @@ const wishlistAPI = {
 
   check: async (itemId: string) => {
     const response = await fetch(
-      `${getBaseUrl()}/api/wishlist/check/${itemId}`
+      `${getBaseUrl()}/api/wishlist/check/${itemId}`,
     );
 
     if (!response.ok) {
@@ -63,7 +59,7 @@ const wishlistAPI = {
     const data = await response.json();
     if (!response.ok) {
       const error = new Error(
-        data.message || "좋아요 취소에 실패하였습니다."
+        data.message || "좋아요 취소에 실패하였습니다.",
       ) as ApiError;
       error.status = response.status;
       throw error;
@@ -82,7 +78,7 @@ const wishlistAPI = {
 
     if (!response.ok) {
       const error = new Error(
-        data.message || "좋아요 리스트 불러오기에 실패하였습니다."
+        data.message || "좋아요 리스트 불러오기에 실패하였습니다.",
       ) as ApiError;
       error.status = response.status;
       throw error;
@@ -119,10 +115,12 @@ export const useAddWishList = () => {
 };
 
 export const useCheckWishList = (itemId: string) => {
+  const { isLoggedIn } = useAuthStore();
+
   return useQuery({
     queryKey: WISHLIST_KEYS.check(itemId),
     queryFn: () => wishlistAPI.check(itemId),
-    enabled: !!itemId,
+    enabled: !!itemId && isLoggedIn,
     staleTime: 0,
     gcTime: 1000 * 60 * 5,
     retry: false,
@@ -155,9 +153,12 @@ export const useRemoveWishList = () => {
 };
 
 export const useWishList = () => {
+  const { isLoggedIn } = useAuthStore();
+
   return useQuery<WishlistItem[]>({
     queryKey: WISHLIST_KEYS.lists(),
     queryFn: wishlistAPI.list,
+    enabled: isLoggedIn,
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 10, // 10분
     retry: 1,
