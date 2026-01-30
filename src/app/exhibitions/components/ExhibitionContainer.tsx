@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useExhibitions } from "@/hooks/useExhibitions";
 import { useWishList } from "@/hooks/useWishlist";
 import CategoryFilter from "./CategoryFilter";
@@ -11,6 +13,8 @@ import MapView from "./MapView";
 export default function ExhibitionContainer() {
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [selectedRegion, setSelectedRegion] = useState("전체");
+  const searchParams = useSearchParams();
+  const { login } = useAuthStore();
 
   // 무한스크롤 데이터 fetching
   const {
@@ -28,10 +32,22 @@ export default function ExhibitionContainer() {
   const wishlistedIds = new Set(
     wishlistError || !wishlistData
       ? []
-      : wishlistData.map((item) => item.item_id)
+      : wishlistData.map((item) => item.item_id),
   );
 
   const observerTarget = useRef<HTMLDivElement>(null);
+
+  // 이메일 인증 후 로그인 처리
+  useEffect(() => {
+    const email = searchParams.get("email");
+    const verified = searchParams.get("verified");
+
+    if (email && verified === "true") {
+      login(decodeURIComponent(email));
+
+      window.history.replaceState({}, "", "/exhibitions");
+    }
+  }, [searchParams, login]);
 
   // 무한스크롤 설정
   useEffect(() => {
@@ -41,7 +57,7 @@ export default function ExhibitionContainer() {
           fetchNextPage();
         }
       },
-      { threshold: 1.0 }
+      { threshold: 1.0 },
     );
 
     const currentTarget = observerTarget.current;
