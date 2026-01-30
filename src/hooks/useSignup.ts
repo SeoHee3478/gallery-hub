@@ -27,8 +27,9 @@ export function useSignup() {
       return data;
     },
     onSuccess: () => {
-      toast.success("회원가입 완료!");
-      router.push("/login");
+      // toast.success("회원가입 완료!");
+      toast.success("이메일 인증번호가 전송되었습니다.");
+      router.push("/signup/pending");
     },
     onError: (error: Error) => {
       console.error("회원가입 오류:", error);
