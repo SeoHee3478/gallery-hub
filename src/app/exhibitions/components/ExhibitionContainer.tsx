@@ -7,6 +7,7 @@ import CategoryFilter from "./CategoryFilter";
 import ExhibitionList from "./ExhibitionList";
 import Spacer from "@/components/ui/Spacer";
 import MapView from "./MapView";
+import EmptyState from "@/components/EmptyState";
 
 export default function ExhibitionContainer() {
   const [selectedCategory, setSelectedCategory] = useState("전체");
@@ -28,7 +29,7 @@ export default function ExhibitionContainer() {
   const wishlistedIds = new Set(
     wishlistError || !wishlistData
       ? []
-      : wishlistData.map((item) => item.item_id)
+      : wishlistData.map((item) => item.item_id),
   );
 
   const observerTarget = useRef<HTMLDivElement>(null);
@@ -41,7 +42,7 @@ export default function ExhibitionContainer() {
           fetchNextPage();
         }
       },
-      { threshold: 1.0 }
+      { threshold: 1.0 },
     );
 
     const currentTarget = observerTarget.current;
@@ -93,6 +94,11 @@ export default function ExhibitionContainer() {
       />
       <Spacer height={32} />
       {/* <MapView data={filteredData} /> */}
+      {filteredData.length === 0 && !isFetchingNextPage ? (
+        <EmptyState message="해당 조건의 전시가 없습니다. 다른 조건으로 검색해주세요." />
+      ) : (
+        <ExhibitionList data={filteredData} wishlistedIds={wishlistedIds} />
+      )}
       <ExhibitionList data={filteredData} wishlistedIds={wishlistedIds} />
 
       {/* 무한스크롤 트리거 영역 */}
@@ -103,7 +109,7 @@ export default function ExhibitionContainer() {
         {isFetchingNextPage && (
           <p className="text-lg text-gray-600">더 불러오는 중...</p>
         )}
-        {!hasNextPage && allExhibitions.length > 0 && (
+        {!hasNextPage && filteredData.length > 0 && (
           <p className="text-gray-500">모든 전시를 불러왔습니다</p>
         )}
       </div>

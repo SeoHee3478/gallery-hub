@@ -4,6 +4,7 @@ import ExhibitionList from "@/app/exhibitions/components/ExhibitionList";
 import { convertWishlistArrayToExhibitions } from "@/lib/exhibitionAdapter";
 import { useWishList } from "@/hooks/useWishlist";
 import { useEffect } from "react";
+import EmptyState from "@/components/EmptyState";
 
 export default function FavoritedExhibitionsContainer() {
   const { data, isLoading, isError, isFetching, refetch } = useWishList();
@@ -26,9 +27,7 @@ export default function FavoritedExhibitionsContainer() {
 
   if (!data || data?.length === 0)
     return (
-      <div className="text-center py-20">
-        <p>아직 좋아요한 전시가 없어요</p>
-      </div>
+      <EmptyState message="아직 좋아요한 전시가 없습니다. 관심있는 전시에 좋아요를 눌러보세요!" />
     );
   const exhibitionData = convertWishlistArrayToExhibitions(data);
   const allWishlistedIds = new Set(data.map((item) => item.item_id));
