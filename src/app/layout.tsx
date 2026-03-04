@@ -39,9 +39,7 @@ export default function RootLayout({
       >
         <Providers>
           <Header />
-          <main className="flex-1 p-4 flex items-center justify-center">
-            {children}
-          </main>
+          <main className="flex-1 p-4 flex justify-center">{children}</main>
           <footer className="bg-gray-100 dark:bg-gray-800 p-4 text-center">
             © 2025 Gallery Hub. All rights reserved.
           </footer>
