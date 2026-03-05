@@ -8,6 +8,7 @@ import ExhibitionList from "./ExhibitionList";
 import Spacer from "@/components/ui/Spacer";
 import MapView from "./MapView";
 import EmptyState from "@/components/EmptyState";
+import Spinner from "@/components/Spinner";
 
 export default function ExhibitionContainer() {
   const [selectedCategory, setSelectedCategory] = useState("전체");
@@ -99,16 +100,13 @@ export default function ExhibitionContainer() {
       ) : (
         <ExhibitionList data={filteredData} wishlistedIds={wishlistedIds} />
       )}
-      <ExhibitionList data={filteredData} wishlistedIds={wishlistedIds} />
 
       {/* 무한스크롤 트리거 영역 */}
       <div
         ref={observerTarget}
         className="w-full h-20 flex justify-center items-center my-8"
       >
-        {isFetchingNextPage && (
-          <p className="text-lg text-gray-600">더 불러오는 중...</p>
-        )}
+        {isFetchingNextPage && <Spinner />}
         {!hasNextPage && filteredData.length > 0 && (
           <p className="text-gray-500">모든 전시를 불러왔습니다</p>
         )}
